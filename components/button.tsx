@@ -1,15 +1,16 @@
-import { Href, Link } from 'expo-router';
-import { openBrowserAsync } from 'expo-web-browser';
-import { type ComponentProps } from 'react';
-import { Platform, TouchableOpacity, Text, StyleSheet ,View} from 'react-native';
+import { Link} from 'expo-router';
+import { act, type ComponentProps } from 'react';
+import { TouchableOpacity, Text, StyleSheet ,View} from 'react-native';
 
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & { text: string };
+type Props = Omit<ComponentProps<typeof Link>, 'href'> & { text: string, action?: () => void};
 
-export const Button = ({ text}: Props) => {
+
+export const Button = (props: Props) => {
+  
   return (
     <View style={styles.shadow}>
-        <TouchableOpacity style={styles.button}>
-            <Text style={styles.button_text}>{text}</Text>
+        <TouchableOpacity style={styles.button} onPress={() => props.action ? props.action() : ''}>
+            <Text style={styles.button_text}>{props.text}</Text>
         </TouchableOpacity>
     </View>
     

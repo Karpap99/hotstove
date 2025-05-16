@@ -1,14 +1,36 @@
 import { Link } from 'expo-router';
 import { type ComponentProps } from 'react';
 import { Text, StyleSheet ,View, TextInput} from 'react-native';
+import SelectDropdown from 'react-native-select-dropdown'
 
 type Props = Omit<ComponentProps<typeof Link>, 'href'> & { text: string, value: string, setValue: (x: string) => void };
 
-export const Input = ({ text, value, setValue}: Props) => {
+export const DatePicker = () => {
   return (
     <View style={styles.shadow}>
-        <Text style={styles.button_text}>{text}</Text>
-        <TextInput placeholder={text} style={styles.input} onChangeText={(e)=>{setValue(e)}} defaultValue={value} />
+        <SelectDropdown
+    data={[0,1,2,3,4]}
+    onSelect={(selectedItem, index) => {
+      console.log(selectedItem, index);
+    }}
+    renderButton={(selectedItem, isOpened) => {
+      return (
+        <View>
+          <Text>
+            {(selectedItem && selectedItem.title) || 'Select your mood'}
+          </Text>
+        </View>
+      );
+    }}
+    renderItem={(item, index, isSelected) => {
+      return (
+        <View style={(isSelected && {backgroundColor: '#D2D9DF'})}>
+          <Text>{item.title}</Text>
+        </View>
+      );
+    }}
+    showsVerticalScrollIndicator={false}
+  />
     </View>
     
   );

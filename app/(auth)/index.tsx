@@ -1,15 +1,21 @@
-import { Image } from 'expo-image';
 import { Platform, StyleSheet,Text, View} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient'
-
+import { useRouter } from 'expo-router';
 import {Button} from "@/components/button"
 
+
 export default function WelcomePage() {
+  const router = useRouter();
+
+  const toAuth = () => {
+    router.navigate("/(auth)/authorization")
+  }
+
   return (
     <LinearGradient colors={['#FFDFBE', '#FFFFFF']} style={styles.container}>
       <Text style={styles.header}>HotStove</Text>
       <Text style={styles.description}>Для використання застосунку{"\n"} необхідно авторизуватись</Text>
-      <Button text='Авторизуватись'/>
+      <Button text='Авторизуватись' action={toAuth} />
       <Button text='Використати Google'/>
     </LinearGradient>
     

@@ -1,0 +1,17 @@
+{
+    "translation": {
+        "NEXT": "Další",
+        "LOGIN": "Přihlásit se",
+        "PASSWORD": "Heslo",
+        "EMAIL": "E-mail",
+        "REPEATPASS": "Zopakujte heslo",
+        "REGISTRATION": "Registrace",
+        "AUTHORIZATION": "Autorizace",
+        "HAVEACC": "Už máte účet?",
+        "DONTHAVEACC": "Ještě nemáte účet?",
+        "FORGOTPASS": "Zapomněli jste heslo?",
+        "REGION": "Region",
+        "SETTINGS": "Nastavení",
+        "FORAPPUSE": "Pro používání aplikace\nje vyžadována autorizace"
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "translation": {
+        "NEXT": "Dalej",
+        "LOGIN": "Zaloguj się",
+        "PASSWORD": "Hasło",
+        "EMAIL": "E-mail",
+        "REPEATPASS": "Powtórz hasło",
+        "REGISTRATION": "Rejestracja",
+        "AUTHORIZATION": "Autoryzacja",
+        "HAVEACC": "Masz już konto?",
+        "DONTHAVEACC": "Nie masz jeszcze konta?",
+        "FORGOTPASS": "Zapomniałeś hasła?",
+        "REGION": "Region",
+        "SETTINGS": "Ustawienia",
+        "FORAPPUSE": "Aby korzystać z aplikacji,\n wymagana jest autoryzacja"
+    }
+}

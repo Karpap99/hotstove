@@ -6,35 +6,40 @@ import { Link } from 'expo-router';
 import {LinearGradient} from 'expo-linear-gradient'
 import { useState } from 'react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
+import { isLoaded } from 'expo-font';
 
 export default function Authorization() {
+  const {t} = useTranslation();
   const [email, setemail] = useState<string>('')
   const [password, setpassword] = useState<string>('')
-
-
     const reg = async () => {
     const res = await axios.post('http://10.0.2.2:3000/auth/login', {
         'email': email,
         'password':password
       })
-    save('token', res.data.token)
+    if(res.data.token){
+      save("isLoggedIn", "true")
+      save('token', res.data.token)
+    }
+    
   }
 
   return (
     <LinearGradient colors={['#FFDFBE', '#FFFFFF']} style={styles.container}>
-        <Text style={styles.header}>Авторизація</Text>
-        <Input text='Єл.пошта' value={email} setValue={setemail} />
+        <Text style={styles.header}>{t('AUTHORIZATION')}</Text>
+        <Input text={t('EMAIL')} value={email} setValue={setemail} />
         <View>
-            <Input text='Пароль' value={password} setValue={setpassword}/>
+            <Input text={t('PASSWORD')} value={password} setValue={setpassword}/>
             <Link style={[{textDecorationLine: 'underline'}, styles.description]} href={'/'}>
-                Забули пароль?
+                {t("FORGOTPASS")}
             </Link>
         </View>
         <View>
-            <Button text='Авторизуватись' action={reg}/>
+            <Button text={t('AUTHORIZATION')} action={reg}/>
             <View style={{display: 'flex', flexDirection: 'row'}}>
-                <Text style={ styles.description}>Немає аккаунту? </Text>
-                <Link href={'/(auth)/registration'} style={[{textDecorationLine: 'underline'},styles.description]}>Реєстрація</Link>
+                <Text style={ styles.description}>{t("DONTHAVEACC")} </Text>
+                <Link href={'/(auth)/registration'} style={[{textDecorationLine: 'underline'},styles.description]}>{t("REGISTRATION")}</Link>
             </View>   
         </View>
         

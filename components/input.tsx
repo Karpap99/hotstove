@@ -1,14 +1,29 @@
 import { Link } from 'expo-router';
-import { type ComponentProps } from 'react';
+import { useEffect, type ComponentProps } from 'react';
 import { Text, StyleSheet ,View, TextInput} from 'react-native';
 
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & { text: string, value: string, setValue: (x: string) => void };
+type Props = Omit<ComponentProps<typeof Link>, 'href'> & { text: string, value: string, setValue: (x: string) => void, rows?: number, limitation?: number };
 
-export const Input = ({ text, value, setValue}: Props) => {
+export const Input = ({ text, value, setValue, rows, limitation}: Props) => {
+  useEffect(()=> {
+  if(limitation){
+
+  }
+  },[value])
   return (
     <View style={styles.shadow}>
         <Text style={styles.button_text}>{text}</Text>
-        <TextInput placeholder={text} style={styles.input} onChangeText={(e)=>{setValue(e)}} defaultValue={value} />
+        {
+          rows ? 
+          <TextInput multiline numberOfLines={rows} placeholder={text} style={ [styles.input, {height: 18 * rows, textAlignVertical: 'top', textAlign:"left"}]} onChangeText={(e)=>{setValue(e)}} maxLength={limitation} defaultValue={value} /> :
+          <TextInput placeholder={text} style={styles.input} onChangeText={(e)=>{setValue(e)}} defaultValue={value} />
+        }
+        {
+          limitation ?
+          <Text style={[styles.button_text, {fontSize:12}]}>{value.length}/{limitation}</Text>:
+          ""
+        }
+        
     </View>
     
   );
@@ -20,10 +35,9 @@ const styles = StyleSheet.create({
     height: 60,
     width: 290,
     backgroundColor: 'white',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  
     fontSize: 14,
+    lineHeight: 18,
     fontFamily:"ComfortaaRegular",
     padding: 5,  
   },

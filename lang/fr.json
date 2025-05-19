@@ -1,0 +1,17 @@
+{
+    "translation": {
+        "NEXT": "Suivant",
+        "LOGIN": "Connexion",
+        "PASSWORD": "Mot de passe",
+        "EMAIL": "E-mail",
+        "REPEATPASS": "Répéter le mot de passe",
+        "REGISTRATION": "Inscription",
+        "AUTHORIZATION": "Autorisation",
+        "HAVEACC": "Vous avez déjà un compte ?",
+        "DONTHAVEACC": "Vous n'avez pas encore de compte ?",
+        "FORGOTPASS": "Mot de passe oublié ?",
+        "REGION": "Région",
+        "SETTINGS": "Paramètres",
+        "FORAPPUSE": "Une autorisation est requise\npour utiliser l'application"
+    }
+}

@@ -1,9 +1,9 @@
 import { Link } from 'expo-router';
-import { useState, type ComponentProps } from 'react';
-import { StyleSheet ,TouchableOpacity, Image } from 'react-native';
+import { useEffect, useState, type ComponentProps } from 'react';
+import { StyleSheet ,TouchableOpacity, View, Text} from 'react-native';
 import * as ImagePicker from "expo-image-picker";
-
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & {file: Object, setfile: (x: Object) => void };
+import { Image } from 'expo-image';
+type Props = Omit<ComponentProps<typeof Link>, 'href'> & {file: Object | undefined, setfile: (x: Object | undefined) => void };
 
 export const PicPicker = ({ file, setfile }: Props) => {
     const [error, setError] = useState(null);
@@ -21,16 +21,32 @@ export const PicPicker = ({ file, setfile }: Props) => {
         }   
     };
 
+    const Pick = () => {
+        if(file)
+            setfile(undefined);
+        else
+            pickImage()
+    }
 
     return (
-        <TouchableOpacity style={styles.picker} onPress={()=>pickImage()}>
+        <View style={styles.container}>
+            <TouchableOpacity style={styles.picker} onPress={()=>Pick()}>
             {
                 file ? 
                 <Image style={styles.img} source={{uri: file.uri}}/>
                 :
-                null
+                <Image style={{height: 200, width: 200}} source={require("@/assets/images/default_pfp.svg")}/>
             }
-        </TouchableOpacity>
+            </TouchableOpacity>
+            {
+                !file ? 
+                <Text style={styles.text}>Натисніть для вибору аватару</Text>
+                :
+                <Text style={styles.text}>Натисніть для прибирання аватару</Text>
+            }
+        </View>
+        
+
     );
 }
 
@@ -47,5 +63,13 @@ const styles = StyleSheet.create({
         height: 200,
         width: 200,
         backgroundColor: 'gray',
-    }
+    },
+    container: {
+        display:"flex",
+        alignItems: "center"
+    },
+    text:{
+    fontSize: 14,
+    fontFamily:"ComfortaaRegular"
+  }
 });

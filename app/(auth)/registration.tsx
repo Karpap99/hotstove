@@ -8,11 +8,7 @@ import axios from 'axios'
 import { save } from "@/services/store";
 import { useTranslation } from "react-i18next";
 
-type user = {
-  nickname: string,
-  email: string,
-  password: string,
-}
+
 
 export default function Registration() {
   const [nickname, setnickname] = useState<string>('')
@@ -31,15 +27,13 @@ export default function Registration() {
     save('token', res.data.token)
   }
 
-
-  
   return (
-    <LinearGradient colors={['#FFDFBE', '#FFFFFF']} style={styles.container}>
+    <View style={styles.container}>
             <Text style={styles.header}>{t('REGISTRATION')}</Text>
             <Input text={t('LOGIN')} value={nickname} setValue={setnickname} />
             <Input text={t('EMAIL')} value={email} setValue={setemail} />
-            <Input text={t('PASSWORD')} value={password} setValue={setpassword} />
-            <Input text={t('REPEATPASS')} value={password2} setValue={setpassword2} />
+            <Input text={t('PASSWORD')} value={password} setValue={setpassword} password/>
+            <Input text={t('REPEATPASS')} value={password2} setValue={setpassword2} password/>
             <View>
                         <Button text={t('REGISTRATION')} action={reg} />
                         <View style={{display: 'flex', flexDirection: 'row'}}>
@@ -47,7 +41,7 @@ export default function Registration() {
                             <Link href={'/(auth)/authorization'} style={[{textDecorationLine: 'underline'}, styles.description]}>{t('AUTHORIZATION')}</Link>
                         </View>   
             </View>
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -66,6 +60,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     textAlign: "center",
     justifyContent: 'center',
+    backgroundColor: 'white',
     gap: 20
-  },
+  }
 });

@@ -5,14 +5,12 @@ import 'react-native-reanimated';
 import { startNetworkLogging } from 'react-native-network-logger';
 import "@/lang/i18n.ts"
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { get } from '@/services/store';
+import { get, get_async, save} from '@/services/store';
 import { useState } from 'react';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const isLogged = () => {
-    return get('isLoggedIn') == "true"
-  }
+  const [isLogged, setIsLogged] = useState((get("isLogged") === "true"))
   const [loaded] = useFonts({
     ComfortaaRegular: require('../assets/fonts/comfortaa/Comfortaa-Regular.ttf'),
   });
@@ -27,14 +25,12 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme} >
       <Stack>
-        <Stack.Protected guard={!isLogged()}>
+        <Stack.Protected guard={!isLogged}>
           <Stack.Screen name="(auth)" options={{  headerShown: false, statusBarHidden: true, navigationBarHidden: true }} />
         </Stack.Protected>
-        
-        <Stack.Protected guard={isLogged()}>
+        <Stack.Protected guard={isLogged}>
           <Stack.Screen name="(main_app)" options={{ headerShown: false }} />
         </Stack.Protected>
-        
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

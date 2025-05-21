@@ -1,6 +1,8 @@
 import { Link} from 'expo-router';
 import { act, type ComponentProps } from 'react';
 import { TouchableOpacity, Text, StyleSheet ,View} from 'react-native';
+import {Shadow} from "react-native-shadow-2"
+
 
 type Props = Omit<ComponentProps<typeof Link>, 'href'> & { text: string, action?: () => void};
 
@@ -8,12 +10,9 @@ type Props = Omit<ComponentProps<typeof Link>, 'href'> & { text: string, action?
 export const Button = (props: Props) => {
   
   return (
-    <View style={styles.shadow}>
-        <TouchableOpacity style={styles.button} onPress={() => props.action ? props.action() : ''}>
-            <Text style={styles.button_text}>{props.text}</Text>
-        </TouchableOpacity>
-    </View>
-    
+    <TouchableOpacity style={[styles.button,styles.container]} onPress={() => props.action ? props.action() : ''}>
+      <Text style={styles.button_text}>{props.text}</Text>
+    </TouchableOpacity>  
   );
 }
 
@@ -26,14 +25,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    
-    
   },
-  shadow: {
-    shadowColor: "#000000",
-    shadowOffset: {width: 5, height: 0},
-    shadowOpacity: 0.2,
-    shadowRadius: 3
+  container: {
+    borderColor:'black',
+    borderWidth: 0.5,
+    borderRadius: 10
 },
   button_text:{
     fontSize: 18,

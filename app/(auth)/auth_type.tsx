@@ -1,5 +1,4 @@
-import { Platform, StyleSheet,Text, View} from 'react-native';
-import {LinearGradient} from 'expo-linear-gradient'
+import { StyleSheet,Text, View} from 'react-native';
 import { useRouter } from 'expo-router';
 import {Button} from "@/components/button"
 import { useTranslation } from 'react-i18next';
@@ -15,12 +14,15 @@ export default function AuthType() {
 
 
   return (
-    <LinearGradient colors={['#FFDFBE', '#FFFFFF']} style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.header}>HotStove</Text>
       <Text style={styles.description}>{t('FORAPPUSE')}</Text>
-      <Button text={t('AUTHORIZATION')} action={toAuth} />
-      <Button text='Використати Google'/>
-    </LinearGradient>
+      <View style={{gap: 20}}>
+        <Button text={t('AUTHORIZATION')} action={toAuth} />
+        <Button text='Використати Google'/>
+      </View>
+      
+    </View>
     
   );
 }
@@ -40,6 +42,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     textAlign: "center",
     justifyContent: 'center',
-    gap: 20
+    backgroundColor: 'white',
+    gap: 35
   },
 });

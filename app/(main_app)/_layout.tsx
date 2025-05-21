@@ -5,11 +5,12 @@ import { Platform } from 'react-native';
 
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { RootState } from '@/services/store/store';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   
-
+  
   return (
     <Tabs
       screenOptions={{

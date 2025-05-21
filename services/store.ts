@@ -7,5 +7,4 @@ const get_async = async (key: string) => await SecureStore.getItemAsync(key)
 
 const get = (key: string) => SecureStore.getItem(key)
 
-
 export {save, get, get_async}

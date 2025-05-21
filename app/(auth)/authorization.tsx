@@ -1,36 +1,36 @@
-import { Pressable, StyleSheet,Text, View} from 'react-native';
-import { save, get } from '@/services/store';
+import {  StyleSheet,Text, View} from 'react-native';
+import { save} from '@/services/store';
 import {Button} from "@/components/button"
 import { Input } from '@/components/input';
 import { Link } from 'expo-router';
-import {LinearGradient} from 'expo-linear-gradient'
 import { useState } from 'react';
-import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { isLoaded } from 'expo-font';
+import { apiPublic } from '@/common/api/api';
+
 
 export default function Authorization() {
   const {t} = useTranslation();
   const [email, setemail] = useState<string>('')
   const [password, setpassword] = useState<string>('')
     const reg = async () => {
-    const res = await axios.post('http://10.0.2.2:3000/auth/login', {
+    const res = await apiPublic.post('/auth/login', {
         'email': email,
         'password':password
-      })
-    if(res.data.token){
+    })
+    if(res.data.access){
       save("isLoggedIn", "true")
-      save('token', res.data.token)
+      save('access_token', res.data.access)
+      save('refresh_token', res.data.refresh)
     }
     
   }
 
   return (
-    <LinearGradient colors={['#FFDFBE', '#FFFFFF']} style={styles.container}>
+    <View style={styles.container}>
         <Text style={styles.header}>{t('AUTHORIZATION')}</Text>
         <Input text={t('EMAIL')} value={email} setValue={setemail} />
         <View>
-            <Input text={t('PASSWORD')} value={password} setValue={setpassword}/>
+            <Input text={t('PASSWORD')} value={password} setValue={setpassword} password/>
             <Link style={[{textDecorationLine: 'underline'}, styles.description]} href={'/'}>
                 {t("FORGOTPASS")}
             </Link>
@@ -43,7 +43,7 @@ export default function Authorization() {
             </View>   
         </View>
         
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -56,11 +56,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily:"ComfortaaRegular"
   },
-  container: {
+   container: {
     flex: 1,
     alignItems: 'center',
     textAlign: "center",
     justifyContent: 'center',
+    backgroundColor: 'white',
     gap: 20
-  },
+  }
 });

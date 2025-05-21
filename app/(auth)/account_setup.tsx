@@ -1,8 +1,6 @@
-import { StyleSheet,Text} from 'react-native';
-import { save, get } from '@/services/store';
+import { StyleSheet,Text,View} from 'react-native';
 import {Button} from "@/components/button"
-import {LinearGradient} from 'expo-linear-gradient'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { PicPicker } from '@/components/profilepic';
 import { useTranslation } from 'react-i18next';
@@ -12,11 +10,11 @@ import DateTimePicker, { DateType, useDefaultStyles } from 'react-native-ui-date
 
 export default function Account_setup() {
   const [description, setDescription] = useState<string>('')
-  const [file, setFile] = useState<Object>({})
+  const [file, setFile] = useState<Object | undefined>()
   const {t} = useTranslation();
   const [active, setActive] = useState<boolean>(false)
-  const [selected, setSelected] = useState<DateType>();
-  
+  const [selected, setSelected] = useState<DateType>(new Date());
+  const [date, setDate] = useState<string>()
 
   const save_pfp = async () => {
     if(file){
@@ -38,42 +36,46 @@ export default function Account_setup() {
 
   const activeState = () => {
     setActive(!active)
-    if (selected){
-      const date = new Date(selected.toString())
-      console.log(date.getFullYear())
-    }
     
   }
 
+  useEffect(()=>{
+    if(selected){
+      const dt = new Date(selected.toString())
+      const dat = (dt.getMonth()+1)+"-"+dt.getDate()+"-"+dt.getFullYear()
+      setDate(dat)
+    }
+  },[selected])
+
   return (
-    <LinearGradient colors={['#FFDFBE', '#FFFFFF']} style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.header}>{t('SETTINGS')}</Text>
       <PicPicker file={file} setfile={setFile}/>
       <Input text='Опис' value={description} setValue={setDescription} rows={6} limitation={512}/>
-      <DatePicker text='Дата народженя' setActive={activeState} value={selected?.toLocaleString()}/>
+      <DatePicker text='Дата народженя' setActive={activeState} value={date}/>
       <Button text={t('NEXT')}/>
       {
         active ? 
-        <DateTimePicker
-          mode="single"
-          date={selected}
-          onChange={({ date }) => { setSelected(date), setActive(!active)}}
-          style={styles.callendarContainer}
-          styles={
+          <DateTimePicker style={styles.callendarContainer}
+            mode="single"
+            date={selected}
+            onChange={({ date }) => { setSelected(date), setActive(!active)}}
+            
+            styles={
             {
               day_label: {
-                fontFamily:"ComfortaaRegular"
+                fontFamily:"ComfortaaRegular",
               },
               month_label: {
                 fontFamily:"ComfortaaRegular"
-              }
-
+              },
+              
             }
           }
-        /> :
+          /> :
          ""
     }
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -91,10 +93,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     textAlign: "center",
     justifyContent: 'center',
+    backgroundColor: 'white',
     gap: 20
   },
    callendarContainer: {
-        position: 'absolute',
-        backgroundColor: 'white'
-   }
+    position: 'absolute',
+    backgroundColor: 'white',
+    width: 310,
+  }
 });

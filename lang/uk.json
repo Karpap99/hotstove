@@ -1,17 +1,27 @@
 {
     "translation" : {
-        "NEXT" : "Далі",
-        "LOGIN" : "Логін",
-        "PASSWORD" : "Пароль",
-        "EMAIL": "Єл.пошта",
+        "NEXT": "Далі",
+        "LOGIN": "Логін",
+        "PASSWORD": "Пароль",
+        "EMAIL": "Ел. пошта",
         "REPEATPASS": "Повторіть пароль",
-        "REGISTRATION" : "Реєстрація",
-        "AUTHORIZATION" : "Авторизація",
-        "HAVEACC" : "Вже є аккаунт? ",
-        "DONTHAVEACC" : "Досі немає аккаунту? ",
-        "FORGOTPASS" : "Забули пароль?",
-        "REGION" : "Регіон",
-        "SETTINGS" : "Налаштування",
-        "FORAPPUSE" : "Для використання застосунку\nнеобхідно авторизуватись"
+        "REGISTRATION": "Реєстрація",
+        "AUTHORIZATION": "Авторизація",
+        "HAVEACC": "Вже маєте акаунт?",
+        "DONTHAVEACC": "Ще не маєте акаунту?",
+        "FORGOTPASS": "Забули пароль?",
+        "REGION": "Регіон",
+        "SETTINGS": "Налаштування",
+        "FORAPPUSE": "Для використання застосунку\nпотрібна авторизація",
+        "USERDONTEXIST": "Ел. пошту або пароль введено неправильно",
+        "EMAILISWRONG": "Ел. пошта має неправильний формат",
+        "PASSWORDISWEAK": "Слабкий пароль: мін. 7 символів, 1 знак та 1 цифра",
+        "PASSWORDSDIFFERENT" : "Паролі не збігаються", 
+        "EMAILTAKEN": "Цю електрону пошту вже зайнято",
+        "FIELDCANTBEEMPTY": "Це поле не може бути порожнім",
+        "AUTHVIAGOOGLE" : "Увійти через Google",
+        "DESCRIPTION" : "Опис",
+        "BIRTHDATE" : "Дата народження"
+
     }
 }

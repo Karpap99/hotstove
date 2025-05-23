@@ -12,6 +12,15 @@
         "FORGOTPASS": "Mot de passe oublié ?",
         "REGION": "Région",
         "SETTINGS": "Paramètres",
-        "FORAPPUSE": "Une autorisation est requise\npour utiliser l'application"
+        "FORAPPUSE": "Une autorisation est requise\npour utiliser l'application",
+        "USERDONTEXIST": "Email ou mot de passe incorrect",
+        "EMAILISWRONG": "Format d'email invalide",
+        "PASSWORDISWEAK": "Mot de passe faible : min. 7 caractères, 1 symbole et 1 chiffre",
+        "PASSWORDSDIFFERENT": "Les mots de passe ne correspondent pas",
+        "EMAILTAKEN": "Cet email est déjà utilisé",
+        "FIELDCANTBEEMPTY": "Ce champ ne peut pas être vide",
+        "AUTHVIAGOOGLE": "Utiliser Google",
+        "DESCRIPTION": "Description",
+        "BIRTHDATE": "Date de naissance"
     }
 }

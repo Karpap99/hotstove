@@ -12,6 +12,15 @@
         "FORGOTPASS": "Forgot password?",
         "REGION": "Region",
         "SETTINGS": "Settings",
-        "FORAPPUSE": "Authorization is required\nto use the app"
+        "FORAPPUSE": "Authorization is required\nto use the app",
+        "USERDONTEXIST": "Email or password is incorrect",
+        "EMAILISWRONG": "Invalid email format",
+        "PASSWORDISWEAK": "Weak password: min. 7 characters, 1 symbol and 1 number",
+        "PASSWORDSDIFFERENT": "Passwords do not match",
+        "EMAILTAKEN": "This email is already taken",
+        "FIELDCANTBEEMPTY": "This field cannot be empty",
+        "AUTHVIAGOOGLE": "Sign in with Google",
+        "DESCRIPTION": "Description",
+        "BIRTHDATE": "Birthdate"
     }
 }

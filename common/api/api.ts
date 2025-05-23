@@ -18,6 +18,28 @@ const privateInstance = axios.create({
     },
 });
 
+
+
+publicInstance.interceptors.response.use(
+    async (response: any) => {
+        if (response.status === 401) {
+            console.log(response)
+        }
+        else{
+            console.log(response)
+        }
+        return response;
+    },
+    async (error: { config: any; response: { status: number; }; }) => {
+        const originalRequest = error.config;
+        if (error.response.status === 401 && !originalRequest._retry) {
+            console.log(error)
+        }
+        return Promise.reject(error.response.data);
+    },
+);
+
+
 privateInstance.interceptors.request.use(
     async config => {
         const accessToken = await get_async('access_token');

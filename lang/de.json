@@ -12,6 +12,15 @@
         "FORGOTPASS": "Passwort vergessen?",
         "REGION": "Region",
         "SETTINGS": "Einstellungen",
-        "FORAPPUSE": "Zur Nutzung der App ist\neine Autorisierung erforderlich"
+        "FORAPPUSE": "Zur Nutzung der App ist\neine Autorisierung erforderlich",
+        "USERDONTEXIST": "Falsche E-Mail oder Passwort",
+    "EMAILISWRONG": "Ungültiges E-Mail-Format",
+    "PASSWORDISWEAK": "Schwaches Passwort: min. 7 Zeichen, 1 Symbol und 1 Zahl",
+    "PASSWORDSDIFFERENT": "Passwörter stimmen nicht überein",
+    "EMAILTAKEN": "Diese E-Mail-Adresse ist bereits vergeben",
+    "FIELDCANTBEEMPTY": "Dieses Feld darf nicht leer sein",
+    "AUTHVIAGOOGLE": "Mit Google anmelden",
+    "DESCRIPTION": "Beschreibung",
+    "BIRTHDATE": "Geburtsdatum"
     }
 }

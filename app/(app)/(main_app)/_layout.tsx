@@ -1,35 +1,39 @@
-import { Tabs } from 'expo-router';
+import { Stack, Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
-
-
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { RootState } from '@/services/store/store';
+import { Layout } from '@/components/layout';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   
   
   return (
-    <Tabs
+    <Layout>
+      <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+        tabBarStyle:
+        {
+          display: 'none'
+        }}}>
       <Tabs.Screen
         name="index"
+        options={{
+          title: 'main',
+        }}
       />
       <Tabs.Screen
-        name="explore"
+        name="followed"
+        options={{
+          title: 'subscribes',
+        }}
       />
-    </Tabs>
+      </Tabs>
+    </Layout>
+        
+    
   );
 }

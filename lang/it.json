@@ -12,6 +12,15 @@
     "FORGOTPASS": "Password dimenticata?",
     "REGION": "Regione",
     "SETTINGS": "Impostazioni",
-    "FORAPPUSE": "È necessaria l'autorizzazione\nper utilizzare l'app"
+    "FORAPPUSE": "È necessaria l'autorizzazione\nper utilizzare l'app",
+    "USERDONTEXIST": "Email o password errati",
+    "EMAILISWRONG": "Formato email non valido",
+    "PASSWORDISWEAK": "Password debole: minimo 7 caratteri, 1 simbolo e 1 numero",
+    "PASSWORDSDIFFERENT": "Le password non corrispondono",
+    "EMAILTAKEN": "Questa email è già in uso",
+    "FIELDCANTBEEMPTY": "Questo campo non può essere vuoto",
+    "AUTHVIAGOOGLE": "Usa Google",
+    "DESCRIPTION": "Descrizione",
+    "BIRTHDATE": "Data di nascita"
   }
 }

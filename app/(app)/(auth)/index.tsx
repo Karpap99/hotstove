@@ -22,7 +22,7 @@ export default function lang_select() {
   }, []);
 
   const toAuth = () => {
-    router.navigate("/(auth)/auth_type")
+    router.navigate('/(app)/(auth)/auth_type')
   }
 
   return (

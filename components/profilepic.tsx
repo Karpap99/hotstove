@@ -3,7 +3,8 @@ import { useEffect, useState, type ComponentProps } from 'react';
 import { StyleSheet ,TouchableOpacity, View, Text} from 'react-native';
 import * as ImagePicker from "expo-image-picker";
 import { Image } from 'expo-image';
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & {file: Object | undefined, setfile: (x: Object | undefined) => void };
+import { File } from './types';
+type Props = Omit<ComponentProps<typeof Link>, 'href'> & {file: any, setfile: (x: any) => void };
 
 export const PicPicker = ({ file, setfile }: Props) => {
     const [error, setError] = useState(null);
@@ -15,15 +16,25 @@ export const PicPicker = ({ file, setfile }: Props) => {
             const result =
                 await ImagePicker.launchImageLibraryAsync();
             if (!result.canceled) {
-                setfile(result.assets[0])
+                setfile({
+                    'uri': result.assets[0].uri,
+                    'file' : result.assets[0].fileName,
+                    'mime' : result.assets[0].mimeType
+                })
                 setError(null);
             }
         }   
     };
 
     const Pick = () => {
-        if(file)
-            setfile(undefined);
+        if(file){
+            const f = {
+                    'uri': "",
+                    'fileName' : "",
+                    'mimeType' : ""
+                }
+            setfile(f);
+        }
         else
             pickImage()
     }

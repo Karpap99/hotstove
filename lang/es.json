@@ -12,6 +12,15 @@
     "FORGOTPASS": "¿Olvidaste tu contraseña?",
     "REGION": "Región",
     "SETTINGS": "Configuraciones",
-    "FORAPPUSE": "Se requiere autorización\npara usar la aplicación"
+    "FORAPPUSE": "Se requiere autorización\npara usar la aplicación",
+    "USERDONTEXIST": "Correo o contraseña incorrectos",
+    "EMAILISWRONG": "Formato de correo inválido",
+    "PASSWORDISWEAK": "Contraseña débil: mínimo 7 caracteres, 1 símbolo y 1 número",
+    "PASSWORDSDIFFERENT": "Las contraseñas no coinciden",
+    "EMAILTAKEN": "Este correo ya está en uso",
+    "FIELDCANTBEEMPTY": "Este campo no puede estar vacío",
+    "AUTHVIAGOOGLE": "Usar Google",
+    "DESCRIPTION": "Descripción",
+    "BIRTHDATE": "Fecha de nacimiento"
   }
 }

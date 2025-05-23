@@ -12,6 +12,15 @@
         "FORGOTPASS": "Zapomněli jste heslo?",
         "REGION": "Region",
         "SETTINGS": "Nastavení",
-        "FORAPPUSE": "Pro používání aplikace\nje vyžadována autorizace"
+        "FORAPPUSE": "Pro používání aplikace\nje vyžadována autorizace",
+        "USERDONTEXIST": "Nesprávný e-mail nebo heslo",
+    "EMAILISWRONG": "Neplatný formát e-mailu",
+    "PASSWORDISWEAK": "Slabé heslo: min. 7 znaků, 1 znak a 1 číslice",
+    "PASSWORDSDIFFERENT": "Hesla se neshodují",
+    "EMAILTAKEN": "Tento e-mail je již použit",
+    "FIELDCANTBEEMPTY": "Toto pole nesmí být prázdné",
+    "AUTHVIAGOOGLE": "Přihlásit se přes Google",
+    "DESCRIPTION": "Popis",
+    "BIRTHDATE": "Datum narození"
     }
 }

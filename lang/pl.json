@@ -12,6 +12,15 @@
         "FORGOTPASS": "Zapomniałeś hasła?",
         "REGION": "Region",
         "SETTINGS": "Ustawienia",
-        "FORAPPUSE": "Aby korzystać z aplikacji,\n wymagana jest autoryzacja"
+        "FORAPPUSE": "Aby korzystać z aplikacji,\n wymagana jest autoryzacja",
+        "USERDONTEXIST": "Nieprawidłowy email lub hasło",
+        "EMAILISWRONG": "Nieprawidłowy format e-maila",
+        "PASSWORDISWEAK": "Słabe hasło: min. 7 znaków, 1 znak i 1 cyfra",
+        "PASSWORDSDIFFERENT": "Hasła się nie zgadzają",
+        "EMAILTAKEN": "Ten e-mail jest już zajęty",
+        "FIELDCANTBEEMPTY": "To pole nie może być puste",
+        "AUTHVIAGOOGLE": "Użyj Google",
+        "DESCRIPTION": "Opis",
+        "BIRTHDATE": "Data urodzenia"
     }
 }

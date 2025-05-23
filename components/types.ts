@@ -8,3 +8,9 @@ export type Country = {
 export type Lang = {
     lang : Object
 }
+
+export type File = {
+  uri : string,
+  name: string | undefined,
+  type : string | undefined
+}

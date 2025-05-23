@@ -1,10 +1,19 @@
 import { Link } from 'expo-router';
-import { useEffect, type ComponentProps } from 'react';
+import { useEffect, useState, type ComponentProps } from 'react';
 import { Text, StyleSheet ,View, TextInput} from 'react-native';
 import { ShadowView } from 'react-native-inner-shadow';
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & { text: string, value: string, setValue: (x: string) => void, rows?: number, limitation?: number, password?: boolean };
+type Props = Omit<ComponentProps<typeof Link>, 'href'> & 
+{ 
+  text: string, 
+  value: string, 
+  setValue: (x: string) => void, 
+  rows?: number, 
+  limitation?: number, 
+  password?: boolean,
+  error?: string,
+};
 
-export const Input = ({ text, value, setValue, rows, limitation, password}: Props) => {
+export const Input = ({ text, value, setValue, rows, limitation, password,error}: Props) => {
   useEffect(()=> {
   if(limitation){
 
@@ -26,6 +35,11 @@ export const Input = ({ text, value, setValue, rows, limitation, password}: Prop
           limitation ?
           <Text style={[styles.text, {fontSize:12}]}>{value.length}/{limitation}</Text>:
           ""
+        }
+        {
+          error ? 
+          <Text style={[styles.text, {fontSize:10, color:'red', lineHeight: 13, paddingLeft: 2}]}>{error}</Text> :
+          <Text style={[styles.text, {fontSize:10, color:'red', lineHeight: 13, paddingLeft: 2, visibility: 'none'}]}>{error}</Text>
         }
     </View>
   );

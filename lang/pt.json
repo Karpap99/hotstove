@@ -12,6 +12,15 @@
     "FORGOTPASS": "Esqueceu a senha?",
     "REGION": "Região",
     "SETTINGS": "Configurações",
-    "FORAPPUSE": "Autorização é necessária \n para usar o aplicativo"
+    "FORAPPUSE": "Autorização é necessária \n para usar o aplicativo",
+    "USERDONTEXIST": "Email ou senha incorretos",
+    "EMAILISWRONG": "Formato de email inválido",
+    "PASSWORDISWEAK": "Senha fraca: mínimo 7 caracteres, 1 símbolo e 1 número",
+    "PASSWORDSDIFFERENT": "As senhas não coincidem",
+    "EMAILTAKEN": "Este email já está em uso",
+    "FIELDCANTBEEMPTY": "Este campo não pode ficar vazio",
+    "AUTHVIAGOOGLE": "Usar o Google",
+    "DESCRIPTION": "Descrição",
+    "BIRTHDATE": "Data de nascimento"
   }
 }

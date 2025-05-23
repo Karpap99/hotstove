@@ -13,14 +13,13 @@ export default function TabLayout() {
     <Tabs  screenOptions={{
             tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
             headerShown: false,
-            tabBarStyle: {},
+            tabBarStyle: {display:"none"},
           }}>
       <Tabs.Screen name='index' options={{  headerShown: false }}/>
       <Tabs.Screen name='auth_type' options={{  headerShown: false }}/>
       <Tabs.Screen name='authorization' options={{  headerShown: false }}/>
       <Tabs.Screen name='registration' options={{  headerShown: false }}/>
       <Tabs.Screen name='account_setup' options={{headerShown: false}}/>
-      <Tabs.Screen name='networking' options={{headerShown: false}}/>
     </Tabs>
   );
 }

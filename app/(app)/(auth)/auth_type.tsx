@@ -12,16 +12,8 @@ export default function AuthType() {
   const toAuth = () => {
     router.navigate("/(app)/(auth)/authorization")
   }
-  const googleSign = GoogleSignin.configure({
-  webClientId: '642381207505-lfnbt0nd90mj6k93rs3708vpcv9ht3eg.apps.googleusercontent.com',
-  scopes:['profile','email']
-})
+  
 
-  const google = async () => {
-    await googleSign.hasPlayServices()
-    const userInfo = await GoogleSignin.signIn()
-    console.log(userInfo)
-  }
 
 
 
@@ -31,7 +23,7 @@ export default function AuthType() {
       <Text style={styles.description}>{t('FORAPPUSE')}</Text>
       <View style={{gap: 20}}>
         <Button text={t('AUTHORIZATION')} action={toAuth} image={require('@/assets/images/authButton.svg')} />
-        <Button text={t("AUTHVIAGOOGLE")} action={google} image={require('@/assets/images/googleAuth.svg')}/>
+        <Button text={t("AUTHVIAGOOGLE")}  image={require('@/assets/images/googleAuth.svg')}/>
       </View>
       
     </View>

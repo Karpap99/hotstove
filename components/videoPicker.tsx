@@ -4,11 +4,21 @@ import { StyleSheet ,TouchableOpacity, View, Text} from 'react-native';
 import * as ImagePicker from "expo-image-picker";
 import { Image } from 'expo-image';
 import { File } from './types';
+import { useVideoPlayer, VideoView } from 'expo-video';
+import { useEvent } from 'expo';
+
 
 type Props = Omit<ComponentProps<typeof Link>, 'href'> & {file: any, setfile: (x: any) => void };
 
-export const PicPicker = ({ file, setfile}: Props) => {
+export const VideoPicker = ({ file, setfile}: Props) => {
     const [error, setError] = useState(null);
+
+    const player = useVideoPlayer(file, player => {
+        player.loop = true;
+        player.play();
+    });
+
+     const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -16,7 +26,8 @@ export const PicPicker = ({ file, setfile}: Props) => {
         {
             const result =
                 await ImagePicker.launchImageLibraryAsync({
-                    allowsEditing: true
+                    allowsEditing: true,
+                    mediaTypes: "videos"
                 });
             if (!result.canceled) {
                 setfile({
@@ -36,6 +47,7 @@ export const PicPicker = ({ file, setfile}: Props) => {
                     'fileName' : "",
                     'mimeType' : ""
                 }
+            console.log(f)
             setfile(f);
         }
         else
@@ -47,17 +59,19 @@ export const PicPicker = ({ file, setfile}: Props) => {
             <TouchableOpacity style={styles.picker} onPress={()=>Pick()}>
             {
                 file ? 
-                <Image style={styles.img} source={{uri: file.uri}}/>
+                <VideoView style={styles.video_player} player={player}>
+                </VideoView>
                 :
-                <Image style={{height: 200, width: 200}} source={require("@/assets/images/default_pfp.svg")}/>
+                ""
             }
-            </TouchableOpacity>
             {
                 !file ? 
-                <Text style={styles.text}>Натисніть для вибору аватару</Text>
+                <Text style={styles.text}>Натисніть для вибору Відео</Text>
                 :
-                <Text style={styles.text}>Натисніть для прибирання аватару</Text>
+                <Text style={styles.text}>Натисніть для прибирання відео</Text>
             }
+            </TouchableOpacity>
+           
         </View>
         
 
@@ -68,10 +82,13 @@ export const PicPicker = ({ file, setfile}: Props) => {
 const styles = StyleSheet.create({
     picker: {
         height: 200,
-        width: 200,
+        width: 350,
         backgroundColor: 'gray',
-        borderRadius: "50%",
-        overflow:"hidden"
+        overflow:"hidden",
+        borderRadius: 5,
+        alignContent: 'center',
+        alignItems: "center",
+        justifyContent:"center"
     },
     img: {
         height: 200,
@@ -80,10 +97,16 @@ const styles = StyleSheet.create({
     },
     container: {
         display:"flex",
-        alignItems: "center"
+        alignItems: "center",
     },
     text:{
+        position: 'absolute',
     fontSize: 14,
-    fontFamily:"ComfortaaRegular"
+    fontFamily:"ComfortaaRegular",
+    color: "white"
+  },
+  video_player: {
+    height: '100%',
+    width: '100%'
   }
 });

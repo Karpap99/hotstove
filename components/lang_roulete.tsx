@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     containerInner: {
-        width: 290,
+        width: 350,
         backgroundColor: "white",
         textAlign: "center",
         overflow: "hidden",      

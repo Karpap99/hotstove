@@ -1,17 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { get, save } from "@/services/store";
-
-type LoginType = {
-    email: string;
-    password: string;
-    remember_me?: boolean | undefined;
-}
+import { apiPrivate } from "@/common/api/api";
 
 type User = {
     nickname: string,
     email: string,
-    profile_picture: string
+    profile_picture: string,
+    age: string,
+    description: string
 }
 
 interface ProviderProps {
@@ -29,7 +26,9 @@ const AuthContext = createContext<ProviderProps>({
     user: {
         nickname: "",
         email:  "",
-        profile_picture:  ""
+        profile_picture:  "",
+        age: "",
+        description: ""
     },
     access_token: '',
     refresh_token: '',
@@ -45,15 +44,32 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     const [user, setUser ] = useState<User>({
         nickname: "",
         email:  "",
-        profile_picture:  ""
+        profile_picture:  "",
+        age: "",
+        description: ""
     })
     const [ access_token, setAToken ] = useState( get('access_token') || '')
     const [ refresh_token, setRToken ] = useState( get('refresh_token') || '')
     const [isLogged, setIsLogged] = useState<boolean>(access_token != '' ? true : false)
     const router = useRouter()
 
+    const refresh = async () => {
+        const result = await apiPrivate.get('/auth/reauth')
+        if(result){
+            login(result.result, result.access, result.refresh)
+        }
+        else{
+            logout()
+        }
+        
+    }
 
-    const login = (usr:User, access_token: string, refresh_token: string ) => {
+    useEffect(()=>{
+        if(refresh_token != undefined || refresh_token.length > 0){
+            refresh()
+    }}, [])
+
+    const login = async (usr:User, access_token: string, refresh_token: string ) => {
         setTimeout(() => {
             setUser(usr)
             setAToken(access_token)
@@ -86,7 +102,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
         setUser({
         nickname: "",
         email:  "",
-        profile_picture:  ""
+        profile_picture:  "",
+        age: "",
+        description: ""
         })
         setAToken('')
         setRToken('')

@@ -22,7 +22,7 @@ export const DatePicker = (props: Props) => {
 const styles = StyleSheet.create({
    container: {
     height: 60,
-    width: 290,
+    width: 350,
     backgroundColor: 'white',
     display: 'flex',
     alignItems: 'center',

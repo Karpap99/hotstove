@@ -78,8 +78,7 @@ export default function Authorization() {
                 <Text style={ styles.description}>{t("DONTHAVEACC")} </Text>
                 <Link href={'/(app)/(auth)/registration'} style={[{textDecorationLine: 'underline'},styles.description]}>{t("REGISTRATION")}</Link>
             </View>   
-        </View>
-        
+        </View>   
     </View>
   );
 }

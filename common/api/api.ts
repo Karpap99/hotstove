@@ -47,7 +47,7 @@ privateInstance.interceptors.request.use(
         if (accessToken && config.headers) {
             config.headers.Authorization = 'Bearer ' + accessToken;
         }
-        config.headers['Cookie'] = `refreshToken=${refreshToken}`;
+        config.headers['Cookie'] = `${refreshToken}`;
         return config;
     },
     error => Promise.reject(error),

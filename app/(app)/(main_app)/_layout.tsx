@@ -4,12 +4,14 @@ import { Platform } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Layout } from '@/components/layout';
+import AppProvider from '@/context/appcontext';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   
   
   return (
+    <AppProvider>
     <Layout>
       <Tabs
       screenOptions={{
@@ -17,7 +19,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle:
         {
-          display: 'none'
+          display:'none'
         }}}>
       <Tabs.Screen
         name="index"
@@ -33,7 +35,7 @@ export default function TabLayout() {
       />
       </Tabs>
     </Layout>
-        
+     </AppProvider>   
     
   );
 }

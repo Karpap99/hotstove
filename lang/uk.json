@@ -21,7 +21,8 @@
         "FIELDCANTBEEMPTY": "Це поле не може бути порожнім",
         "AUTHVIAGOOGLE" : "Увійти через Google",
         "DESCRIPTION" : "Опис",
-        "BIRTHDATE" : "Дата народження"
+        "BIRTHDATE" : "Дата народження",
+        "SEARCH" : "Пошук"
 
     }
 }

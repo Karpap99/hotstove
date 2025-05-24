@@ -27,7 +27,7 @@ export const Input = ({ text, value, setValue, rows, limitation, password,error}
             <TextInput multiline numberOfLines={rows} placeholder={text} style={ [styles.input, {height: 18 * rows, textAlignVertical: 'top', textAlign:"left"}]} onChangeText={(e)=>{setValue(e)}} maxLength={limitation} defaultValue={value} /> 
             :
                 password ?
-                <TextInput secureTextEntry placeholder={text} style={styles.input} onChangeText={(e)=>{setValue(e)}} defaultValue={value} />
+                <TextInput secureTextEntry placeholder={text} style={styles.input} onChangeText={(e)=>{setValue(e)}} defaultValue={value}/>
                   :
                 <TextInput placeholder={text} style={styles.input} onChangeText={(e)=>{setValue(e)}} defaultValue={value} />
           }
@@ -49,7 +49,7 @@ export const Input = ({ text, value, setValue, rows, limitation, password,error}
 const styles = StyleSheet.create({
   input: {
     height: 60,
-    width: 290,
+    width: 350,
     fontSize: 14,
     lineHeight: 18,
     fontFamily:"ComfortaaRegular",
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     backgroundColor:'white',
     borderColor:'black',
     borderWidth: 0.5,
-    borderRadius: 10 
+    borderRadius: 5 
   },
   text:{
     fontSize: 14,

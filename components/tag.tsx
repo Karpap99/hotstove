@@ -1,5 +1,4 @@
-import { Touchable, TouchableOpacity, Text, StyleSheet} from "react-native"
-
+import { TouchableOpacity, Text, StyleSheet} from "react-native"
 
 type Props = {
     text: string
@@ -8,9 +7,7 @@ type Props = {
 export const Tag = ({text}: Props) => {
     return(
         <TouchableOpacity style={styles.tag_container}>
-            <Text style={styles.text}>
-                {text}
-            </Text>
+            <Text style={styles.text}>{text}</Text>
         </TouchableOpacity>
     )
 }

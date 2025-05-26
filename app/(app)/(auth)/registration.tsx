@@ -1,94 +1,100 @@
 import {Button} from "@/components/button"
 import { Input } from '@/components/input';
 import { StyleSheet,Text, View} from 'react-native';
-import { Link } from 'expo-router';
-import {LinearGradient} from 'expo-linear-gradient'
+import { Link,useRouter } from 'expo-router';
 import { useEffect, useState } from "react";
-import axios from 'axios'
-import { save } from "@/services/store";
 import { useTranslation } from "react-i18next";
-import { useRouter } from 'expo-router';
 import { apiPublic } from "@/common/api/api";
 import { useAuth } from "@/context/authcontext";
+import { AxiosResponse } from "axios";
 
+
+type User = {
+  nickname: string, 
+  email: string,
+  password: string,
+  password2: string
+}
+
+const cleanUser = {nickname: "", email: "",password: "",password2: ""}
+
+type BadRequestError = {
+  message: string[],
+  error: string,
+  statusCode: number
+}
+
+
+type Response = {
+  result: User,
+  access: string,
+  refresh: string
+}
 
 export default function Registration() {
-  const [nickname, setnickname] = useState<string>('')
-  const [email, setemail] = useState<string>('')
-  const [password, setpassword] = useState<string>('')
-  const [password2, setpassword2] = useState<string>('')
-
-  const [passwordError, setPasswordError] = useState<string>('')
-  const [password2Error, setPassword2Error] = useState<string>('')
-  const [EmailError, setEmailError] = useState<string>('')
-  const [nicknameError, setnicknameError] = useState<string>('')
+  const [user, setUser] = useState<User>(cleanUser)
+  const [errors, setErrors] = useState<User>(cleanUser)
 
   const {t} = useTranslation();
   const router = useRouter();
   const {reg_fstage} = useAuth()
 
+
+  const setNickname = (x: string) => setUser({...user, nickname: x })
+  const setEmail = (x: string) => setUser({...user, email: x })
+  const setPassword = (x: string) => setUser({...user, password: x })
+  const setPassword2 = (x: string) => setUser({...user, password2: x })
+
   useEffect(()=>{
-    if(password != password2) setPassword2Error(t('PASSWORDSDIFFERENT'))
-    else setPassword2Error(t('PASSWORDSDIFFERENT'))
-  },[password2])
+    if(user.password != user.password2) setErrors({...errors, password2: t('PASSWORDSDIFFERENT')})
+    else setErrors({...errors, password2: ""})
+  },[user.password2])
 
   const reg = async () => {
-    setEmailError("")
-    setnicknameError("")
-    setPasswordError("")
-    setPassword2Error("")
-    if(email == "" || nickname == "" || password == "" || password2 == ""){
-      if(email == "") setEmailError(t("FIELDCANTBEEMPTY"))
-      if(nickname == "") setnicknameError(t("FIELDCANTBEEMPTY"))
-      if(password == "") setPasswordError(t("FIELDCANTBEEMPTY"))
-      if(password2 == "") setPassword2Error(t("FIELDCANTBEEMPTY"))
+    setErrors(cleanUser)
+    if(user.email == "" || user.nickname == "" || user.password == "" || user.password2 == ""){
+      if(user.email == "") setErrors({...errors, email: t("FIELDCANTBEEMPTY")})
+      if(user.nickname == "") setErrors({...errors, nickname: t("FIELDCANTBEEMPTY")})
+      if(user.password == "") setErrors({...errors, password: t("FIELDCANTBEEMPTY")})
+      if(user.password2 == "") setErrors({...errors, password2: t("FIELDCANTBEEMPTY")})
       return
     }
       
-    
-    const res = await apiPublic.post('auth/sign-up', {
-    'nickname':nickname,
-    'email':email,
-    'password':password,
-    'password2' : password2
-    }).catch((e)=>
+    const res : AxiosResponse | void = await apiPublic.post('auth/sign-up', user).catch((e: BadRequestError)=>
     {
-        if(e["statusCode"] === 400){
-          e.message.find((el) => {
-             switch(el){
-              case "password is not strong enough":
-                setPasswordError(t('PASSWORDISWEAK'))
-                break
-              case "email must be an email":
-                setEmailError(t('EMAILISWRONG'))
-                break
-              case "this email taken":
-                setEmailError(t('EMAILTAKEN'))
-                break
-            }
-          })
-        }
-      })
-
-    if(res.data.access){
-     const user = {
-        nickname: res.data.result.nickname,
-        email: res.data.result.email,
-        profile_picture: res.data.result.profile_picture
+      if(e["statusCode"] === 400){
+        e.message.find((el) => {
+          switch(el){
+            case "password is not strong enough":
+              setErrors({...errors, password:t('PASSWORDISWEAK')})
+              break
+            case "email must be an email":
+              setErrors({...errors, email:t('EMAILISWRONG')})
+              break
+            case "this email taken":
+              setErrors({...errors, email:t('EMAILTAKEN')})
+              break
+          }
+        })
       }
-      reg_fstage(user, res.data.access, res.data.refresh )
-      router.navigate('/(app)/(auth)/account_setup')
+    })
+
+    if(res){
+      const response: Response = res.data
+      if(response.access != ''){
+        reg_fstage(response.access, response.refresh)
+        router.navigate('/(app)/(auth)/account_setup')
+      }
     }
-    
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{t('REGISTRATION')}</Text>
-      <Input text={t('LOGIN')} value={nickname} setValue={setnickname} error={nicknameError} />
-      <Input text={t('EMAIL')} value={email} setValue={setemail} error={EmailError}/>
-      <Input text={t('PASSWORD')} value={password} setValue={setpassword} password error={passwordError}/>
-      <Input text={t('REPEATPASS')} value={password2} setValue={setpassword2} password error={password2Error}/>
+      <Input text={t('LOGIN')} value={user.nickname} setValue={setNickname} error={errors.nickname} />
+      <Input text={t('EMAIL')} value={user.email} setValue={setEmail} error={errors.email}/>
+      <Input text={t('PASSWORD')} value={user.password} setValue={setPassword} password error={errors.password}/>
+      <Input text={t('REPEATPASS')} value={user.password2} setValue={setPassword2} password error={errors.password2}/>
       <View>
         <Button text={t('REGISTRATION')} action={reg} />
           <View style={{display: 'flex', flexDirection: 'row'}}>

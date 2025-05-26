@@ -8,18 +8,13 @@ type Props = {
 }
 
 export const NavButton = ({text,image, action}: Props) => {
-
     return (
-        <TouchableOpacity style={[styles.navButton]} >
+        <TouchableOpacity style={[styles.navButton]} onPress={() => action ? action() : null} >
             <Image style={styles.navImage} source={image ? image : require("@/assets/images/authButton.svg")}/>
-            {text ? <Text style={styles.navText}>
-                {text}
-            </Text> : "" }
-        </TouchableOpacity>
-        
+            { text ? <Text style={styles.navText}>{text}</Text> : null }
+        </TouchableOpacity> 
     );
 }
-
 
 const styles = StyleSheet.create({
     navButton: {
@@ -41,5 +36,4 @@ const styles = StyleSheet.create({
         height: 25,
         width: 25
     }
-
 });

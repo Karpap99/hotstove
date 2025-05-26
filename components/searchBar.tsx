@@ -1,20 +1,15 @@
 import { Link } from 'expo-router';
 import { t } from 'i18next';
-import { useEffect, useState, type ComponentProps } from 'react';
-import { Text, StyleSheet ,View, TextInput} from 'react-native';
-import { ShadowView } from 'react-native-inner-shadow';
+import { type ComponentProps } from 'react';
+import { StyleSheet , TextInput} from 'react-native';
+
 type Props = Omit<ComponentProps<typeof Link>, 'href'> & 
 {  
   value: string, 
   setValue: (x: string) => void, 
-  rows?: number, 
-  limitation?: number, 
-  password?: boolean,
-  error?: string,
 };
 
 export const SearchBar = ({value, setValue}: Props) => {
-
   return (
       <TextInput placeholder={t("SEARCH")} style={styles.input} onChangeText={(e)=>{setValue(e)}} defaultValue={value} />
   );
@@ -33,9 +28,5 @@ const styles = StyleSheet.create({
     borderColor:'black',
     borderWidth: 0.5,
     borderRadius: 5 
-  },
-  text:{
-    fontSize: 14,
-    fontFamily:"ComfortaaRegular"
   }
 });

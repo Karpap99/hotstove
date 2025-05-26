@@ -7,43 +7,60 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { apiPublic } from '@/common/api/api';
 import { useAuth } from '@/context/authcontext';
+import { AxiosResponse } from 'axios';
 
 
+type User = {
+  email: string,
+  password: string,
+}
 
+const cleanUser = {email: "", password: ""}
+
+type BadRequestError = {
+  message: string[],
+  error: string,
+  statusCode: number
+}
+
+
+type Response = {
+  result: User,
+  access: string,
+  refresh: string
+}
 
 
 export default function Authorization() {
   const {t} = useTranslation();
-  const [email, setemail] = useState<string>('')
-  const [password, setpassword] = useState<string>('')
-  const {isLogged, user, login}= useAuth()
-  const [passwordError, setPasswordError] = useState<string>('')
-  const [EmailError, setEmailError] = useState<string>('')
+  const {login}= useAuth()
+  const [user, setUser] = useState<User>(cleanUser)
+  const [errors, setErrors] = useState<User>(cleanUser)
+  
+  const setEmail = (x: string) => setUser({...user, email: x})
+  const setPassword = (x: string) => setUser({...user, password: x})
+
   const reg = async () => {
-    setEmailError("")
-    setPasswordError("")
-    if(email == "" || password == "" ){
-      if(email == "") setEmailError(t("FIELDCANTBEEMPTY"))
-      if(password == "") setPasswordError(t("FIELDCANTBEEMPTY"))
+    setErrors(cleanUser)
+    if(user.email == "" || user.password == "" ){
+      if(user.email == "") setErrors({...errors, email:t("FIELDCANTBEEMPTY")})
+      if(user.password == "") setErrors({...errors, password:t("FIELDCANTBEEMPTY")})
       return
     }
-    const res = await apiPublic.post('/auth/login', {
-      'email': email,
-      'password':password
-    })
-    .catch((e)=>
+    const res : AxiosResponse | void = await apiPublic.post('/auth/login', user)
+    .catch((e: BadRequestError)=>
       {
         if(e["statusCode"] === 400){
           e.message.find((el) => {
              switch(el){
               case "password is not strong enough":
-                setPasswordError(t('PASSWORDISWEAK'))
+                 setErrors({...errors, password:t('PASSWORDISWEAK')})
                 break
               case "email must be an email":
-                setEmailError(t('EMAILISWRONG'))
+                setErrors({...errors, email:t('EMAILISWRONG')})
                 break
               case "user doesn't exist":
-                setEmailError(t('USERDONTEXIST'))
+                setErrors({...errors, email:t('USERDONTEXIST')})
                 break
             }
           })
@@ -51,23 +68,26 @@ export default function Authorization() {
       })
     
 
+    if(res)
     if(res.data.access){
-      const user = {
+      const authorized_user = {
         nickname: res.data.result.nickname,
         email: res.data.result.email,
-        profile_picture: res.data.result.profile_picture
+        profile_picture: res.data.result.profile_picture,
+        id: res.data.result.id,
+        description: res.data.result.description,
+        age: res.data.result.age
       }
-      login(user, res.data.access,res.data.refresh)
+      login(authorized_user, res.data.access,res.data.refresh)
     }
-
   }
 
   return (
     <View style={styles.container}>
         <Text style={styles.header}>{t('AUTHORIZATION')}</Text>
-        <Input text={t('EMAIL')} value={email} setValue={setemail} error={EmailError} />
+        <Input text={t('EMAIL')} value={user.email} setValue={setEmail} error={errors.email} />
         <View>
-            <Input text={t('PASSWORD')} value={password} setValue={setpassword} password error={passwordError}/>
+            <Input text={t('PASSWORD')} value={user.password} setValue={setPassword} password error={errors.password}/>
             <Link style={[{textDecorationLine: 'underline'}, styles.description]} href={'/'}>
                 {t("FORGOTPASS")}
             </Link>

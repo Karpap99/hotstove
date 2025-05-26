@@ -1,8 +1,5 @@
-import { Dimensions, StyleSheet, TouchableOpacity, View, Text } from "react-native"
+import { StyleSheet, TouchableOpacity, View, Text } from "react-native"
 import { Image } from "expo-image"
-import { useAuth } from "@/context/authcontext"
-import { useEffect, useState } from "react"
-import { rgbaColor } from "react-native-reanimated/lib/typescript/Colors"
 
 type Props = {
     text: string,
@@ -11,13 +8,11 @@ type Props = {
 }
 
 export const PostAction = ({text,image, action}: Props) => {
-    
     return (
         <View style={styles.action}>
             <TouchableOpacity onPress={()=>action ? action() : null}>
                 <Image style={styles.ico} source={image}/>
             </TouchableOpacity>
-            
             <Text style={styles.text}>{text}</Text>
         </View>
     )
@@ -33,7 +28,6 @@ const styles = StyleSheet.create({
     ico: {
         height: 22,
         width: 22
-
     },
     text:{
         fontSize: 14,

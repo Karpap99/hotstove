@@ -8,11 +8,13 @@ export const Selector = ({ text, setValue, values}: Props) => {
   const [visible, setVisible] = useState<boolean>(false)
   const [selected, setSelected] = useState<string>(text)
   const [input, setInput] = useState<string>('')
+
   useEffect(()=>{
     setValue(selected)
     if(selected != text)
       setInput(selected)
   },[selected])
+
   return (
     <View style={styles.shadow}>
         <Text style={styles.text}>{text}</Text>
@@ -21,8 +23,7 @@ export const Selector = ({ text, setValue, values}: Props) => {
             <TextInput placeholder={text} style={styles.text} value={input} onChangeText={(e)=>setInput(e)}></TextInput>
             :
             <Text style={styles.text}>{selected}</Text>
-          }
-            
+          } 
         </TouchableOpacity>
         {
           visible ? 
@@ -55,9 +56,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily:"ComfortaaRegular",
     padding: 5,  
-    
   },
-
   item:{
     borderBottomColor: "gray",
     borderBottomWidth: 0.3,
@@ -73,16 +72,15 @@ const styles = StyleSheet.create({
     bottom: 0,
     flex: 1,
     overflow: 'hidden'
-  }
-  ,
+  },
   shadow: {
     shadowColor: "#000000",
     shadowOffset: {width: 5, height: 0},
     shadowOpacity: 0.2,
     shadowRadius: 3,
     position: 'relative'
-},
-   text:{
+  },
+  text: {
     fontSize: 18,
     fontFamily:"ComfortaaRegular"
   }

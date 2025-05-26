@@ -1,27 +1,11 @@
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native"
 import { Image } from "expo-image"
-import { useAuth } from "@/context/authcontext"
 import { ReactElement, useEffect, useState } from "react"
-import { rgbaColor } from "react-native-reanimated/lib/typescript/Colors"
 import React from "react"
-import {User} from "./types"
 import { Tag } from "./tag"
 import { PostAction } from "./postAction"
-
-
-
-type post = { 
-  marking: element[],
-  user?: User
-}
-
-type element = {
-  component: string,
-  styles: Object,
-  value?: string,
-  children: element[]
-}
-
+import { JsonToReact } from "./JsonToReact"
+import { post } from "./types"
 
 type Props = {
     data: post
@@ -30,68 +14,34 @@ type Props = {
 export const Post = ({data}:Props) => {
     const [PostEl, setPostEl] = useState<ReactElement>()
     const [date, setDate] = useState<string>(new Date().toDateString())
-    const [tags, setTags]  =useState<string[]>(['італія', "м'ясні страви", "спагеті",'італія', "м'ясні страви", "спагеті"])
-    const JsonToReact =  (obj: post) => {
+    const [tags, setTags] =useState<string[]>(['італія', "м'ясні страви", "спагеті",'італія', "м'ясні страви", "спагеті"])
     
-    const ReturnEl: any = (el: element, ky: number) => {
-      switch(el.component){
-        case 'View':
-          return React.createElement(View, {style:el.styles, key:ky}, [el.children.map((elem, index) => ReturnEl(elem, index))])
-          break
-        case 'Text':
-          return React.createElement(Text, {key:ky}, [el.value])
-          break
-        case 'Image':
-          return React.createElement(Image, {style:el.styles,source: el.value,key:ky})
-          break
-        case 'List':
-          break
-      }
-      
-    }
-    const components = obj['marking']
-    const view = React.createElement(View, {}, [components.map((comp, index) => ReturnEl(comp, index))])
-    return view
-  }
-
-  useEffect(()=>{
-    setPostEl(JsonToReact(data))
-  },[])
+    useEffect(()=>{
+        setPostEl(JsonToReact(data))
+    },[])
 
     return (
         <View style={styles.post} >
             <View style={styles.post_header}>
                 <View style={styles.post_header_upper}>
                     <View style={styles.post_header_left}> 
-                    <TouchableOpacity style={styles.image_container}>
-                    {
-                     data.user ? 
-                        data.user.profile_picture ?
-                            <Image style={styles.image} source={data.user.profile_picture}/> :
-                            <Image style={styles.image} source={require("@/assets/images/default_pfp.svg")}/>
-                            :
-                            <Image style={styles.image} source={require("@/assets/images/default_pfp.svg")}/>
-                                    
-                    }
-                    </TouchableOpacity>
-                    <View>
-                        <Text style={styles.post_header_user}>@{data.user ? data.user.nickname : 'default_user'}</Text>
-                        <Text style={styles.post_header_user}>{date}</Text>
+                        <TouchableOpacity style={styles.image_container}>
+                            <Image style={styles.image} source={data.user != undefined ? (data.user.profile_picture != "" ? data.user.profile_picture : require("@/assets/images/default_pfp.svg")) : require("@/assets/images/default_pfp.svg")}/>
+                        </TouchableOpacity>
+                        <View>
+                            <Text style={styles.post_header_user}>@{data.user ? data.user.nickname : 'default_user'}</Text>
+                            <Text style={styles.post_header_user}>{date}</Text>
+                        </View>
                     </View>
-                </View>
-                <View style={styles.post_header_right}>
-                    {
-                        tags.map((str, index)=> (<Tag key={index} text={str}></Tag>))
-                    }
-                </View>
+                    <View style={styles.post_header_right}>
+                        {
+                            tags.map((str, index)=> (<Tag key={index} text={str}/>))
+                        }
+                    </View>
                 </View>
                 <Text style={styles.post_head}>Default Header</Text>
             </View>
-            <View style={styles.post_content}>
-                {
-                PostEl
-                }
-            </View>
+            <View style={styles.post_content}>{PostEl}</View>
             <View style={styles.post_footer}>
                 <View style={styles.footer_actions}>
                     <PostAction text="0" image={require('@/assets/images/message.svg')}></PostAction>
@@ -126,7 +76,6 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         overflow: 'hidden'
     },
-
     post_header: {
         height: 90,
         padding:5,
@@ -140,13 +89,13 @@ const styles = StyleSheet.create({
         display:'flex',
         flexDirection: "row",
         justifyContent: "space-between",
-    }
-    ,post_header_left:{
+    },
+    post_header_left:{
         display:'flex',
         flexDirection: "row",
         gap: 5
-    }
-    ,post_header_right:{
+    },
+    post_header_right:{
         display:'flex',
         flexDirection: "row",
         justifyContent: "flex-end",
@@ -173,16 +122,13 @@ const styles = StyleSheet.create({
         height: 35,
         justifyContent:'center'
     },
-    
     footer_actions: {
         display: 'flex',
         flexDirection: "row",
         alignItems: "center",
         gap: 15,
         paddingLeft: 10
-        
     },
-    
     post_head:{
         fontSize: 22,
         fontFamily:"ComfortaaRegular",

@@ -1,21 +1,17 @@
-import { Link } from 'expo-router';
 import { PropsWithChildren, useEffect, useState, type ComponentProps } from 'react';
 import { StyleSheet ,TouchableOpacity, View, Animated, ViewStyle, useAnimatedValue, Text, ScrollView } from 'react-native';
 import { Image } from 'expo-image';
-import * as ImagePicker from "expo-image-picker";
 import { useAuth } from '@/context/authcontext';
 import { useApp } from '@/context/appcontext';
-import { transform } from '@babel/core';
-import { Button } from '@react-navigation/elements';
 
 
 type SlideInViewProps = PropsWithChildren<{style: ViewStyle}>;
 
 const SlideInView: React.FC<SlideInViewProps> = props => {
-   const animated = new Animated.Value(500);
-   const duration = 500;
+    const animated = new Animated.Value(500);
+    const duration = 500;
 
-   useEffect(() => {
+    useEffect(() => {
         Animated.timing(animated, {
             toValue: 0,
             duration: duration,
@@ -23,20 +19,19 @@ const SlideInView: React.FC<SlideInViewProps> = props => {
         }).start();
     }, []);
 
-  return (
-    <Animated.View // Special animatable View
-      style={{
-        ...props.style,
-        transform: [{translateX: animated}]
-         // Bind opacity to animated value
-      }}>
-      {props.children}
-    </Animated.View>
-  );
+    return (
+        <Animated.View
+            style={{
+            ...props.style,
+            transform: [{translateX: animated}]
+        }}>
+            {props.children}
+        </Animated.View>
+   );
 };
 
 export const Modal = () => {
-    const {user} = useAuth()
+    const {user, logout} = useAuth()
     const {switchModal} = useApp()
     const ReturnPFP = () => {
         if (user)
@@ -52,7 +47,6 @@ export const Modal = () => {
                     <Image style={styles.pfp} source={ReturnPFP()}/>
                     <Text style={styles.button_text}>@default_user</Text>
                 </View>
-           
                 <TouchableOpacity style={styles.button_wrapper}>
                         <Text style={styles.button_text}>Мій канал</Text>
                 </TouchableOpacity>
@@ -62,15 +56,11 @@ export const Modal = () => {
                 <TouchableOpacity style={styles.button_wrapper}>
                         <Text style={styles.button_text}>Налаштування</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button_wrapper}>
+                <TouchableOpacity style={styles.button_wrapper} onPress={()=> logout()}>
                         <Text style={styles.button_text}>Вийти</Text>
                 </TouchableOpacity>
-                
-                
-                
             </SlideInView>
         </View>
-        
     );
 }
 
@@ -112,5 +102,4 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontFamily:"ComfortaaRegular"
     }
-
 });

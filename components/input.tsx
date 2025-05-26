@@ -1,7 +1,6 @@
 import { Link } from 'expo-router';
 import { useEffect, useState, type ComponentProps } from 'react';
 import { Text, StyleSheet ,View, TextInput} from 'react-native';
-import { ShadowView } from 'react-native-inner-shadow';
 type Props = Omit<ComponentProps<typeof Link>, 'href'> & 
 { 
   text: string, 
@@ -14,33 +13,18 @@ type Props = Omit<ComponentProps<typeof Link>, 'href'> &
 };
 
 export const Input = ({ text, value, setValue, rows, limitation, password,error}: Props) => {
-  useEffect(()=> {
-  if(limitation){
-
-  }
-  },[value])
   return (
     <View >
         <Text style={styles.text}>{text}</Text>
-         {
-          rows ? 
-            <TextInput multiline numberOfLines={rows} placeholder={text} style={ [styles.input, {height: 18 * rows, textAlignVertical: 'top', textAlign:"left"}]} onChangeText={(e)=>{setValue(e)}} maxLength={limitation} defaultValue={value} /> 
-            :
-                password ?
-                <TextInput secureTextEntry placeholder={text} style={styles.input} onChangeText={(e)=>{setValue(e)}} defaultValue={value}/>
-                  :
-                <TextInput placeholder={text} style={styles.input} onChangeText={(e)=>{setValue(e)}} defaultValue={value} />
-          }
-        {
-          limitation ?
-          <Text style={[styles.text, {fontSize:12}]}>{value.length}/{limitation}</Text>:
-          ""
-        }
-        {
-          error ? 
-          <Text style={[styles.text, {fontSize:10, color:'red', lineHeight: 13, paddingLeft: 2}]}>{error}</Text> :
-          <Text style={[styles.text, {fontSize:10, color:'red', lineHeight: 13, paddingLeft: 2, visibility: 'none'}]}>{error}</Text>
-        }
+        <TextInput 
+          multiline={rows ? true : false} 
+          secureTextEntry={password} 
+          numberOfLines={rows} 
+          placeholder={text} 
+          style={[styles.input, rows ? {height: 18 * rows, textAlignVertical: 'top', textAlign:"left"} : null]} 
+          onChangeText={(e)=>{setValue(e)}} maxLength={limitation} defaultValue={value} /> 
+        <Text style={[styles.text, {fontSize:12 }, !limitation ? {display: "none"} : null]}>{value.length}/{limitation}</Text>
+        <Text style={[styles.text, {fontSize:10, color:'red', lineHeight: 13, paddingLeft: 2},(error ? {visibility: 'none'} : null)]}>{error}</Text> 
     </View>
   );
 }

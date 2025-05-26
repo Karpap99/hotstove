@@ -2,30 +2,20 @@ import { StyleSheet,Text, View} from 'react-native';
 import { useRouter } from 'expo-router';
 import {Button} from "@/components/button"
 import { useTranslation } from 'react-i18next';
-import {GoogleSignin} from '@react-native-google-signin/google-signin'
-
-
 
 export default function AuthType() {
   const router = useRouter();
   const {t} = useTranslation();
-  const toAuth = () => {
-    router.navigate("/(app)/(auth)/authorization")
-  }
+  const toAuth = () => router.navigate("/(app)/(auth)/authorization")
   
-
-
-
-
   return (
     <View style={styles.container}>
       <Text style={styles.header}>HotStove</Text>
       <Text style={styles.description}>{t('FORAPPUSE')}</Text>
       <View style={{gap: 20}}>
         <Button text={t('AUTHORIZATION')} action={toAuth} image={require('@/assets/images/authButton.svg')} />
-        <Button text={t("AUTHVIAGOOGLE")}  image={require('@/assets/images/googleAuth.svg')}/>
+        <Button text={t("AUTHVIAGOOGLE")} image={require('@/assets/images/googleAuth.svg')}/>
       </View>
-      
     </View>
     
   );

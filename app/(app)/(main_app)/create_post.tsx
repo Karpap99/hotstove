@@ -4,6 +4,9 @@ import { useEffect } from 'react';
 import { Platform, StyleSheet } from 'react-native';
 
 
+const Marking = () => {
+  
+}
 
 export default function CreatePost() {
   return (

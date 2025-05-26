@@ -1,9 +1,7 @@
 import { Link } from 'expo-router';
-import { useEffect, useState, type ComponentProps } from 'react';
+import { useState, type ComponentProps } from 'react';
 import { StyleSheet ,TouchableOpacity, View, Text} from 'react-native';
 import * as ImagePicker from "expo-image-picker";
-import { Image } from 'expo-image';
-import { File } from './types';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useEvent } from 'expo';
 
@@ -18,17 +16,13 @@ export const VideoPicker = ({ file, setfile}: Props) => {
         player.play();
     });
 
-     const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
+    const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status === "granted")
         {
-            const result =
-                await ImagePicker.launchImageLibraryAsync({
-                    allowsEditing: true,
-                    mediaTypes: "videos"
-                });
+            const result = await ImagePicker.launchImageLibraryAsync({allowsEditing: true, mediaTypes: "videos"});
             if (!result.canceled) {
                 setfile({
                     'uri': result.assets[0].uri,
@@ -41,17 +35,8 @@ export const VideoPicker = ({ file, setfile}: Props) => {
     };
 
     const Pick = () => {
-        if(file){
-            const f = {
-                    'uri': "",
-                    'fileName' : "",
-                    'mimeType' : ""
-                }
-            console.log(f)
-            setfile(f);
-        }
-        else
-            pickImage()
+        if(file) setfile({ 'uri': "", 'fileName' : "",'mimeType' : ""});
+        else pickImage()
     }
 
     return (
@@ -59,22 +44,15 @@ export const VideoPicker = ({ file, setfile}: Props) => {
             <TouchableOpacity style={styles.picker} onPress={()=>Pick()}>
             {
                 file ? 
-                <VideoView style={styles.video_player} player={player}>
-                </VideoView>
+                <>
+                    <VideoView style={styles.video_player} player={player}/>
+                    <Text style={styles.text}>Натисніть для прибирання відео</Text>
+                </>
                 :
-                ""
-            }
-            {
-                !file ? 
                 <Text style={styles.text}>Натисніть для вибору Відео</Text>
-                :
-                <Text style={styles.text}>Натисніть для прибирання відео</Text>
             }
             </TouchableOpacity>
-           
         </View>
-        
-
     );
 }
 

@@ -9,11 +9,9 @@ export const DatePicker = (props: Props) => {
     return (
         <View>
             <Text style={styles.text}>{props.text}</Text>
-                <TouchableOpacity style={styles.container} onPress={()=>props.setActive()} >
-                    <Text style={styles.content}>
-                        {props.value}
-                    </Text>
-                </TouchableOpacity>
+            <TouchableOpacity style={styles.container} onPress={()=>props.setActive()} >
+                <Text style={styles.content}>{props.value}</Text>
+            </TouchableOpacity>
         </View>  
     );
 }

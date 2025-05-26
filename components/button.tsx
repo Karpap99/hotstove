@@ -5,21 +5,13 @@ import { Image } from 'expo-image';
 
 type Props = Omit<ComponentProps<typeof Link>, 'href'> & { text: string, action?: () => void, image?: string};
 
-
-export const Button = (props: Props) => {
-  
+export const Button = ({text, action, image}: Props) => {
   return (
-    <TouchableOpacity style={[styles.button, (props.image ? {
-      flexDirection:'row',
-      paddingLeft: 15,
-      gap: 10,
-      justifyContent:"flex-start"} : "")]} onPress={() => props.action ? props.action() : ''}>
-      {
-        props.image ? 
-        <Image style={styles.button_image} source={props.image}/> :
-        ""
-      }
-      <Text style={styles.button_text}>{props.text}</Text>
+    <TouchableOpacity 
+      style={[styles.button, (image ? styles.button_with_image : "")]} 
+      onPress={() => action ? action() : ''}>
+      { image ? <Image style={styles.button_image} source={image}/> : null}
+      <Text style={styles.button_text}>{text}</Text>
     </TouchableOpacity>  
   );
 }
@@ -45,5 +37,10 @@ const styles = StyleSheet.create({
   button_image:{
     height: 32,
     width: 32
-  }
+  },
+  button_with_image: {
+      flexDirection:'row',
+      paddingLeft: 15,
+      gap: 10,
+      justifyContent:"flex-start"}
 });

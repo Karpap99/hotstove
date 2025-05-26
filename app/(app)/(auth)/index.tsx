@@ -21,9 +21,7 @@ export default function lang_select() {
     loadLanguage();
   }, []);
 
-  const toAuth = () => {
-    router.navigate('/(app)/(auth)/auth_type')
-  }
+  const toAuth = () => router.navigate('/(app)/(auth)/auth_type')
 
   return (
     <View style={styles.container}>
@@ -42,6 +40,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     justifyContent: 'center',
     backgroundColor: 'white',
-    gap: 35
+    gap: 35,
   }
 });

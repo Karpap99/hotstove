@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store'
 
-const save = async (key: string, value: string) => await SecureStore.setItemAsync(key, value)
+const save = (key: string, value: string) =>  SecureStore.setItem(key, value)
 
 
 const get_async = async (key: string) => await SecureStore.getItemAsync(key)

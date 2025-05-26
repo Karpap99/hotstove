@@ -45,22 +45,10 @@ export const PicPicker = ({ file, setfile}: Props) => {
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.picker} onPress={()=>Pick()}>
-            {
-                file ? 
-                <Image style={styles.img} source={{uri: file.uri}}/>
-                :
-                <Image style={{height: 200, width: 200}} source={require("@/assets/images/default_pfp.svg")}/>
-            }
+                <Image style={styles.img} source={file ? {uri: file.uri} : require("@/assets/images/default_pfp.svg")}/>
             </TouchableOpacity>
-            {
-                !file ? 
-                <Text style={styles.text}>Натисніть для вибору аватару</Text>
-                :
-                <Text style={styles.text}>Натисніть для прибирання аватару</Text>
-            }
+            <Text style={styles.text}>{!file ? "Натисніть для вибору аватару" : "Натисніть для прибирання аватару"}</Text>
         </View>
-        
-
     );
 }
 

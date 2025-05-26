@@ -1,13 +1,14 @@
 import { StyleSheet,Text,View} from 'react-native';
 import {Button} from "@/components/button"
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PicPicker } from '@/components/profilepic';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/input';
 import { DatePicker } from '@/components/datepicker';
-import DateTimePicker, { DateType, useDefaultStyles } from 'react-native-ui-datepicker';
+import DateTimePicker, { DateType} from 'react-native-ui-datepicker';
 import { apiPrivate } from '@/common/api/api';
 import { useAuth } from '@/context/authcontext';
+import { AxiosResponse } from 'axios';
 
 
 
@@ -22,40 +23,27 @@ export default function Account_setup() {
 
   const UpdateAccount = async () => {
     const formData = new FormData()
+
     if(file){
-      formData.append('file', 
-      {
+      formData.append('isPublic', 'true')
+      formData.append('file', {
         'uri': file.uri,
         'name': file.file,
         'type': file.mime
       })
-      formData.append('isPublic', 'true')
     }
 
-    if(description.length > 0){
+    if(description.length > 0)
       formData.append('description', description)
-    }
 
-    if(selected){
-      const dt = new Date(selected.toString())
-      formData.append('age', `${dt}`)
-    }
-    
-    console.log(formData)  
+    if(selected)
+      formData.append('age', `${new Date(selected.toString())}`)
 
-    const result = await apiPrivate.put('user/', formData, {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      }).catch((e)=>{console.log(e)})
-    if(result.data['res'] === "updated"){
-      const u = {
-        profile_picture: ""
-      }
-      if(result.data.result.profile_picture)
-        u.profile_picture = result.data.result.profile_picture
-      reg_sstage({...user, ...u})
-    }
+    const result: AxiosResponse | void = await apiPrivate.put('user/', formData, {headers: {"content-type": "multipart/form-data"},})
+
+    if(result)
+      if(result.data['res'] === "updated")
+        reg_sstage({...user, ...result.data['result']})
   }
 
   const activeState = () => {
@@ -63,11 +51,9 @@ export default function Account_setup() {
   }
 
   useEffect(()=>{
-    
     if(selected){
       const dt = new Date(selected.toString())
-      const dat = (dt.getMonth()+1)+"-"+dt.getDate()+"-"+dt.getFullYear()
-      setDate(dat)
+      setDate((dt.getMonth()+1)+"-"+dt.getDate()+"-"+dt.getFullYear())
     }
   },[selected])
 
@@ -92,8 +78,7 @@ export default function Account_setup() {
               },
               month_label: {
                 fontFamily:"ComfortaaRegular"
-              },
-              
+              },  
             }
           }
           /> :

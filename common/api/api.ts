@@ -2,6 +2,7 @@ import { get_async } from '@/services/store';
 import axios from 'axios';
 
 
+
 const publicInstance = axios.create({
     baseURL: process.env.EXPO_PUBLIC_API_URL,
 });
@@ -21,22 +22,8 @@ const privateInstance = axios.create({
 
 
 publicInstance.interceptors.response.use(
-    async (response: any) => {
-        if (response.status === 401) {
-            console.log(response)
-        }
-        else{
-            console.log(response)
-        }
-        return response;
-    },
-    async (error: { config: any; response: { status: number; }; }) => {
-        const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry) {
-            console.log(error)
-        }
-        return Promise.reject(error.response.data);
-    },
+    async (response: any) => response,
+    async (error: { config: any; response: { status: number; }; }) => Promise.reject(error.response),
 );
 
 

@@ -20,3 +20,23 @@ export type User = {
   nickname: string,
   profile_picture: string
 }
+
+
+export type post = { 
+  marking: element,
+  user?: User
+}
+
+export type element = {
+  component: string,
+  styles: Object,
+  value?: string,
+  children: element[]
+}
+
+
+export type reg_response = {
+  nickname: string, 
+  email: string,
+  profile_picture: string
+}

@@ -10,7 +10,6 @@ import { resources } from "@/lang/i18n"
 export default function lang_select() {
   const router = useRouter();
   const {i18n, t} = useTranslation();
-
   useEffect(() => {
     const loadLanguage = async () => {
       const savedLanguage = await get('language')
@@ -25,11 +24,10 @@ export default function lang_select() {
 
   return (
     <View style={styles.container}>
-      <Image source={require("@/assets/images/lang.svg")} style={{height: 150, width: 150}}/>
+      <Image source={require("@/assets/images/lang.svg")} style={styles.image}/>
       <LangRoulete langs={resources}/>
       <Button text={t("NEXT")} action={toAuth}/>
     </View>
-    
   );
 }
 
@@ -41,5 +39,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
     gap: 35,
+  },
+  image: {
+    height: 150,
+    width: 150
   }
 });

@@ -23,10 +23,11 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: "row",
         alignItems: "center",
-        gap: 5
+        gap: 5,
+        padding: 3
     },
     ico: {
-        height: 22,
+        height: 18,
         width: 22
     },
     text:{

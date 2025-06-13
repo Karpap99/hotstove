@@ -1,16 +1,14 @@
 import { Link } from 'expo-router';
 import { useState, type ComponentProps } from 'react';
-import { StyleSheet ,TouchableOpacity, View, Text } from 'react-native';
+import { StyleSheet ,TouchableOpacity, View, Text,ScrollView } from 'react-native';
 import {Image} from "expo-image";
-import { User } from './types';
+import { element, User } from './types';
 import React from 'react';
+import { PostTextInput } from './PostTextInput';
+import { PostImageInput } from './PostImageInput';
+import { PostTableInput } from './PostTableInput';
 
-type element = {
-  component: string,
-  styles: Object,
-  value?: string,
-  children: element[]
-}
+
 
 type Props = Omit<ComponentProps<typeof Link>, 'href'> & {marking: element};
 
@@ -27,7 +25,7 @@ export const JsonToReact =  ({marking}: Props) => {
                 break
       }
     }
-    return React.createElement(View, {}, [marking.children.map((comp, index) => ReturnEl(comp, index))])
+    return ReturnEl(marking, 'main')
 }
 
 

@@ -17,10 +17,10 @@ export const Selector = ({ text, setValue, values}: Props) => {
 
   return (
     <View style={styles.shadow}>
-        <Text style={styles.text}>{text}</Text>
+        <Text style={[styles.text, styles.header_text]}>{text}</Text>
         <TouchableOpacity style={styles.selector} onPress={()=>setVisible(!visible)}>
           {visible ?
-            <TextInput placeholder={text} style={styles.text} value={input} onChangeText={(e)=>setInput(e)}></TextInput>
+            <TextInput placeholder={text} style={styles.input} value={input} onChangeText={(e)=>setInput(e)}></TextInput>
             :
             <Text style={styles.text}>{selected}</Text>
           } 
@@ -29,10 +29,10 @@ export const Selector = ({ text, setValue, values}: Props) => {
           visible ? 
             <ScrollView style={styles.list}  contentContainerStyle={{ flexGrow: 1 }}>
               {
-                values.map(({name, key})=>(
-                    name.includes(input) ? 
-                      <TouchableOpacity style={styles.item} key={key} onPress={()=>{setSelected(name); setVisible(!visible)}}>
-                        <Text style={styles.text}>{name}</Text>
+                values.map(({title, id})=>(
+                      title.includes(input) ? 
+                      <TouchableOpacity style={styles.item} key={id} onPress={()=>{setSelected(title); setVisible(!visible)}}>
+                        <Text style={styles.text}>{title}</Text>
                       </TouchableOpacity>
                     : null
                 ))
@@ -49,39 +49,55 @@ export const Selector = ({ text, setValue, values}: Props) => {
 const styles = StyleSheet.create({
   selector: {
     height: 60,
-    width: 290,
+    width: 350,
     backgroundColor: 'white',
+    borderColor:'black',
+    borderWidth: 0.5,
+    borderRadius: 5 ,
     display: 'flex',
     justifyContent: 'center',
     fontSize: 16,
     fontFamily:"ComfortaaRegular",
-    padding: 5,  
   },
   item:{
     borderBottomColor: "gray",
     borderBottomWidth: 0.3,
     height: 60,
     padding: 5,
-
   },
   list: {
     backgroundColor:"white",
-    width: 290,
+    width: 350,
     minHeight: 60,
     maxHeight: 80,
+    borderColor:'black',
+    borderWidth: 0.5,
     bottom: 0,
     flex: 1,
     overflow: 'hidden'
   },
   shadow: {
-    shadowColor: "#000000",
-    shadowOffset: {width: 5, height: 0},
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
     position: 'relative'
   },
-  text: {
-    fontSize: 18,
+   input: {
+    height: 60,
+    width: 350,
+    fontSize: 14,
+    lineHeight: 18,
+    fontFamily:"ComfortaaRegular",
+    backgroundColor:'white',
+    borderColor:'black',
+    borderWidth: 0.5,
+    borderRadius: 5 ,
+    padding: 5
+  },
+  text:{
+    paddingBottom: 5,
+    paddingLeft: 5,
+    fontSize: 14,
     fontFamily:"ComfortaaRegular"
+  },
+  header_text:{
+    padding: 0
   }
 });

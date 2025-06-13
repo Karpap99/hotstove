@@ -67,16 +67,12 @@ export default function Authorization() {
         }
       })
     
-
     if(res)
     if(res.data.access){
       const authorized_user = {
         nickname: res.data.result.nickname,
         email: res.data.result.email,
-        profile_picture: res.data.result.profile_picture,
-        id: res.data.result.id,
-        description: res.data.result.description,
-        age: res.data.result.age
+        id: res.data.result.id
       }
       login(authorized_user, res.data.access,res.data.refresh)
     }
@@ -94,9 +90,9 @@ export default function Authorization() {
         </View>
         <View>
             <Button text={t('AUTHORIZATION')} action={reg}/>
-            <View style={{display: 'flex', flexDirection: 'row'}}>
+            <View style={styles.to_reg_container}>
                 <Text style={ styles.description}>{t("DONTHAVEACC")} </Text>
-                <Link href={'/(app)/(auth)/registration'} style={[{textDecorationLine: 'underline'},styles.description]}>{t("REGISTRATION")}</Link>
+                <Link href={'/(app)/(auth)/registration'} style={styles.to_reg}>{t("REGISTRATION")}</Link>
             </View>   
         </View>   
     </View>
@@ -119,5 +115,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
     gap: 10
+  },
+  to_reg: {
+    fontSize: 12,
+    fontFamily:"ComfortaaRegular",
+    textDecorationLine: 'underline'
+  }
+  ,
+  to_reg_container: {
+    display: 'flex',  
+    flexDirection: 'row'
   }
 });

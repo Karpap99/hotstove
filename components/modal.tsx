@@ -31,33 +31,33 @@ const SlideInView: React.FC<SlideInViewProps> = props => {
 };
 
 export const Modal = () => {
-    const {user, logout} = useAuth()
+    const {user, userData, logout} = useAuth()
     const {switchModal} = useApp()
     const ReturnPFP = () => {
-        if (user)
-            if(user.profile_picture)
-                return user.profile_picture
+        if(userData)
+            if(userData.profile_picture)
+                return userData.profile_picture
         return require("@/assets/images/default_pfp.svg")
     }
     return (
         <View style={[styles.wrapper]} >
             <TouchableOpacity style={styles.switchModal} activeOpacity={1} onPress={()=>switchModal()}></TouchableOpacity>
             <SlideInView style={styles.modal_body}>
-                <View style={[styles.button_wrapper, {padding: 40}]}>
+                <View style={[styles.button_wrapper, { padding: 40}]}>
                     <Image style={styles.pfp} source={ReturnPFP()}/>
-                    <Text style={styles.button_text}>@default_user</Text>
+                    <Text style={styles.button_text}>@{user.nickname}</Text>
                 </View>
                 <TouchableOpacity style={styles.button_wrapper}>
-                        <Text style={styles.button_text}>Мій канал</Text>
+                    <Text style={styles.button_text}>Мій канал</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button_wrapper}>
-                        <Text style={styles.button_text}>Профіль</Text>
+                    <Text style={styles.button_text}>Профіль</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button_wrapper}>
-                        <Text style={styles.button_text}>Налаштування</Text>
+                    <Text style={styles.button_text}>Налаштування</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button_wrapper} onPress={()=> logout()}>
-                        <Text style={styles.button_text}>Вийти</Text>
+                    <Text style={[styles.button_text,{color: 'rgb(168, 48, 48)'}]}>Вийти</Text>
                 </TouchableOpacity>
             </SlideInView>
         </View>
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         backgroundColor:"white",
         right: 0,
         borderLeftColor: "rgba(0,0,0,0.8)",
-        borderLeftWidth: 0.6
+        borderLeftWidth: 0.6,
     },
     wrapper: {
         width: "100%",
@@ -80,7 +80,8 @@ const styles = StyleSheet.create({
         backgroundColor:"rgba(0,0,0,0.3)",
         position: 'absolute',
         display: "flex",
-        flexDirection: 'row'
+        flexDirection: 'row',
+        
     },
     switchModal: {
         width: "20%",
@@ -100,6 +101,6 @@ const styles = StyleSheet.create({
     },
     button_text:{
         fontSize: 24,
-        fontFamily:"ComfortaaRegular"
+        fontFamily:"ComfortaaRegular",
     }
 });

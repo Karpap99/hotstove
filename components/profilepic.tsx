@@ -4,8 +4,12 @@ import { StyleSheet ,TouchableOpacity, View, Text} from 'react-native';
 import * as ImagePicker from "expo-image-picker";
 import { Image } from 'expo-image';
 import { File } from './types';
-
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & {file: any, setfile: (x: any) => void };
+type FileType = {
+  uri: string,
+  file: string,
+  mime: string
+}
+type Props = Omit<ComponentProps<typeof Link>, 'href'> & {file: FileType, setfile: (x: any) => void };
 
 export const PicPicker = ({ file, setfile}: Props) => {
     const [error, setError] = useState(null);
@@ -31,15 +35,9 @@ export const PicPicker = ({ file, setfile}: Props) => {
 
     const Pick = () => {
         if(file){
-            const f = {
-                    'uri': "",
-                    'fileName' : "",
-                    'mimeType' : ""
-                }
-            setfile(f);
-        }
-        else
-            pickImage()
+            setfile(null);
+        } 
+        else pickImage()
     }
 
     return (

@@ -1,4 +1,5 @@
 import { apiPrivate } from '@/common/api/api';
+import { Post } from '@/components/post';
 import { useAuth } from '@/context/authcontext';
 import { get, save } from '@/services/store';
 import { Image } from 'expo-image';
@@ -24,13 +25,32 @@ type Post = {
   marking: Object,
   tags: string[]
 }
-
+const data =
+{
+    marking: {
+      component: "ScrollView",
+      styles: '',
+      value: '',
+      children: [
+        {
+          component: "View",
+          styles: '',
+          value: 'Buga',
+          children: []
+        }
+      ]
+    }     
+  }
 export default function Channel() {
   const params = useLocalSearchParams<{ id?: string }>();
-  const {user} = useAuth()
+  const {user, userData} = useAuth()
   const [User, setUser] = useState<User>()
+
+  
   useEffect(()=>{
-    console.log(params)
+    if(params.id == user.id){
+      setUser({...user, ...userData})
+    }
   },[])
 
   const getUser = async () => {
@@ -42,27 +62,26 @@ export default function Channel() {
 
 
   return (
-    <View>
+    <View style={{flex: 1, alignItems: "stretch"}}>
       <View style={styles.header}>
         <View>
-          <Image style={styles.user_image} source={''}/>
-          <Text style={styles.user_name}>@default_user</Text>
+          <Image style={styles.user_image} source={User?.profile_picture}/>
+          <Text style={styles.user_name}>@{User?.nickname}</Text>
         </View>
-        
         <TouchableOpacity style={styles.subscribe_button}>
           <Text style={styles.subscribe_text}>
             Підписатися
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={{height:"100%"}}>
-        <ScrollView>
-
+      <View style={{flex: 7}}>
+        <ScrollView style={{overflow:"hidden"}} contentContainerStyle={{alignItems: 'center', gap: 5, paddingTop:5, paddingBottom: 10}}>
+          <Post data={data}/>
+          <Post data={data}/>
+          <Post data={data}/>
         </ScrollView>
       </View>
-      
     </View>
-    
   );
 }
 
@@ -73,25 +92,31 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.3,
     display: "flex",
     alignItems: 'center',
-    paddingBottom: 15,
     paddingTop: 15,
-    gap: 20
+    gap: 20,
+    flex: 6
   },
   user_image: {
     height: 200,
     width: 200,
     backgroundColor: "gray",
-    borderRadius: 5
+    borderRadius: 5,
+    borderColor: 'gray',
+    borderWidth: 0.3
   },
   subscribe_button:{
     width: 290,
     height: 60,
     backgroundColor: 'rgb(255, 70, 70)',
-     borderRadius: 5
+    borderRadius: 5,
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   user_name: {
     fontSize: 22,
-    fontFamily: "ComfortaaRegular"
+    fontFamily: "ComfortaaRegular",
+    textAlign: 'center', 
   },
   subscribe_text: {
     color: "white",

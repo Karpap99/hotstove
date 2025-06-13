@@ -62,7 +62,9 @@ export default function Registration() {
       
     const res : AxiosResponse | void = await apiPublic.post('auth/sign-up', user).catch((e: BadRequestError)=>
     {
+      console.log(e)
       if(e["statusCode"] === 400){
+        
         e.message.find((el) => {
           switch(el){
             case "password is not strong enough":

@@ -13,7 +13,6 @@ export const VideoPicker = ({ file, setfile}: Props) => {
 
     const player = useVideoPlayer(file, player => {
         player.loop = true;
-        player.play();
     });
 
     const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
@@ -35,22 +34,22 @@ export const VideoPicker = ({ file, setfile}: Props) => {
     };
 
     const Pick = () => {
-        if(file) setfile({ 'uri': "", 'fileName' : "",'mimeType' : ""});
+        if(file.uri != "") setfile({ 'uri': "", 'fileName' : "",'mimeType' : ""});
         else pickImage()
     }
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.picker} onPress={()=>Pick()}>
-            {
-                file ? 
-                <>
+            <View style={styles.picker} >
+                {
+                    file.uri ? 
                     <VideoView style={styles.video_player} player={player}/>
-                    <Text style={styles.text}>Натисніть для прибирання відео</Text>
-                </>
-                :
-                <Text style={styles.text}>Натисніть для вибору Відео</Text>
-            }
+                    :
+                    <></>
+                }
+            </View>
+            <TouchableOpacity style={styles.select} onPress={()=>Pick()}>
+                <Text style={styles.text}>{file.uri != "" ? "Натисніть для прибирання відео" : "Натисніть для вибору Відео"}</Text>
             </TouchableOpacity>
         </View>
     );
@@ -60,31 +59,35 @@ export const VideoPicker = ({ file, setfile}: Props) => {
 const styles = StyleSheet.create({
     picker: {
         height: 200,
-        width: 350,
+        width: 340,
         backgroundColor: 'gray',
         overflow:"hidden",
-        borderRadius: 5,
+        borderRadius: 2,
         alignContent: 'center',
         alignItems: "center",
         justifyContent:"center"
     },
-    img: {
-        height: 200,
-        width: 200,
-        backgroundColor: 'gray',
-    },
     container: {
         display:"flex",
         alignItems: "center",
+        gap: 5
     },
     text:{
-        position: 'absolute',
     fontSize: 14,
     fontFamily:"ComfortaaRegular",
-    color: "white"
-  },
-  video_player: {
-    height: '100%',
-    width: '100%'
-  }
+    },
+    video_player: {
+        height: '100%',
+        width: '100%'
+    },
+    select: {
+        width: 340,
+        height: 40, 
+        backgroundColor: "white",
+        borderWidth: 0.4,
+        borderColor: 'gray',
+        borderRadius: 2,
+        alignItems: "center",
+        justifyContent: "center"
+    }
 });

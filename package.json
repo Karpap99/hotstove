@@ -11,6 +11,8 @@
     "lint": "expo lint"
   },
   "dependencies": {
+    "@babel/parser": "^7.27.5",
+    "@babel/traverse": "^7.27.4",
     "@expo/vector-icons": "^14.1.0",
     "@react-native-google-signin/google-signin": "^14.0.1",
     "@react-navigation/bottom-tabs": "^7.3.10",

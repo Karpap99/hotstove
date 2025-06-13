@@ -8,13 +8,18 @@ import { DatePicker } from '@/components/datepicker';
 import DateTimePicker, { DateType} from 'react-native-ui-datepicker';
 import { apiPrivate } from '@/common/api/api';
 import { useAuth } from '@/context/authcontext';
-import { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 
 
+type FileType = {
+  uri: string,
+  file: string,
+  mime: string
+}
 
 export default function Account_setup() {
   const [description, setDescription] = useState<string>('')
-  const [file, setFile] = useState<any>()
+  const [file, setFile] = useState<FileType | null>(null)
   const {t} = useTranslation();
   const [active, setActive] = useState<boolean>(false)
   const [selected, setSelected] = useState<DateType>(new Date());
@@ -32,18 +37,10 @@ export default function Account_setup() {
         'type': file.mime
       })
     }
-
-    if(description.length > 0)
-      formData.append('description', description)
-
-    if(selected)
-      formData.append('age', `${new Date(selected.toString())}`)
-
-    const result: AxiosResponse | void = await apiPrivate.put('user/', formData, {headers: {"content-type": "multipart/form-data"},})
-
-    if(result)
-      if(result.data['res'] === "updated")
-        reg_sstage({...user, ...result.data['result']})
+    if(description.length > 0) formData.append('description', description)
+    if(selected) formData.append('age', new Date(selected.toString()).toISOString())
+    const result: AxiosResponse | void = await apiPrivate.put('/user-data/', formData, {headers: {"content-type": "multipart/form-data"}})
+    if(result) if(result.data['res'] === "updated") reg_sstage({...user, ...result.data['result']})
   }
 
   const activeState = () => {
@@ -65,12 +62,10 @@ export default function Account_setup() {
       <DatePicker text={t('BIRTHDATE')} setActive={activeState} value={date}/>
       <Button text={t('NEXT')} action={UpdateAccount}/>
       {
-        active ? 
-          <DateTimePicker style={styles.callendarContainer}
+        active && <DateTimePicker style={styles.callendarContainer}
             mode="single"
             date={selected}
-            onChange={({ date }) => { setSelected(date), setActive(!active)}}
-            
+            onChange={({ date }) => { setSelected(date), setActive(false)}}
             styles={
             {
               day_label: {
@@ -81,9 +76,8 @@ export default function Account_setup() {
               },  
             }
           }
-          /> :
-         ""
-    }
+          /> 
+      }
     </View>
   );
 }

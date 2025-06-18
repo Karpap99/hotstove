@@ -10,37 +10,52 @@ import { PostTableInput } from './PostTableInput';
 
 type Props = Omit<ComponentProps<typeof Link>, 'href'> & 
 {
-    counter: number, 
+    nextId: number, 
     setText: (id: number, value: string,) => void, 
     setImage: (id: number, uri: string, name: string, type: string) => void,
-    setTable: (id: number, table: Table[]) => void
-    addElement: (x: ReactElement) => void
+    setTable: (id: number, table: Table[]) => void,
+    addElement: (element: ReactElement, id: number) => void,
+    onDelete: (id:number) => void,
 };
 
-export const ComponentSelector = ({counter, setText, setImage, setTable, addElement}: Props) => {
-    const OnPressText = () => addElement(React.createElement(PostTextInput, { id: counter, setText: setText }, []))
-    const OnPressImage = () => addElement(React.createElement(PostImageInput, { id: counter, setImage: setImage }, []))
-    const OnPressList = () => {}
-    const OnPressTable = () => addElement(React.createElement(PostTableInput, { id: counter, setTable: setTable }, []))
-    const components = [
-        { key: 'text', label: 'текст', icon: require("@/assets/images/text.svg"), onPress: OnPressText },
-        { key: 'image', label: 'зображення', icon: require("@/assets/images/image.svg"), onPress: OnPressImage },
-        { key: 'list', label: 'список', icon: require("@/assets/images/list.svg"), onPress: OnPressList },
-        { key: 'table', label: 'таблиця', icon: require("@/assets/images/table.svg"), onPress: OnPressTable },
-    ];
-    
+export const ComponentSelector = ({ nextId, setText, setImage, setTable, addElement, onDelete }: Props) => {
+  const OnPressText = () => {
+    const id = nextId;
+    const el = React.createElement(PostTextInput, { id, setText, key: id });
+    addElement(el, id);
+  };
+  const OnPressImage = () => {
+    const id = nextId;
+    const el = React.createElement(PostImageInput, { id, setImage, key: id  });
+    addElement(el, id);
+  };
+  const OnPressTable = () => {
+    const id = nextId;
+    const el = React.createElement(PostTableInput, { id, setTable, onDelete, key: id });
+    addElement(el, id);
+  };
+  const OnPressList = () => {
+    // Реалізуй за потребою
+  };
 
-    return (
-        <View style={styles.container}>
-            {components.map(({key, label, icon, onPress}) => (
-                <TouchableOpacity key={key} style={styles.navButton} onPress={onPress}>
-                <Image style={styles.navImage} source={icon} />
-                <Text style={styles.navText}>{label}</Text>
-                </TouchableOpacity>
-            ))}
-        </View>  
-    );
-}
+  const components = [
+    { key: 'text', label: 'текст', icon: require("@/assets/images/text.svg"), onPress: OnPressText },
+    { key: 'image', label: 'зображення', icon: require("@/assets/images/image.svg"), onPress: OnPressImage },
+    { key: 'list', label: 'список', icon: require("@/assets/images/list.svg"), onPress: OnPressList },
+    { key: 'table', label: 'таблиця', icon: require("@/assets/images/table.svg"), onPress: OnPressTable },
+  ];
+
+  return (
+    <View style={styles.container}>
+      {components.map(({ key, label, icon, onPress }) => (
+        <TouchableOpacity key={key} style={styles.navButton} onPress={onPress}>
+          <Image style={styles.navImage} source={icon} />
+          <Text style={styles.navText}>{label}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+};
 
 
 const styles = StyleSheet.create({

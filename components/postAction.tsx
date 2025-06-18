@@ -2,9 +2,10 @@ import { StyleSheet, TouchableOpacity, View, Text } from "react-native"
 import { Image } from "expo-image"
 
 type Props = {
-    text: string,
+    text?: string,
     image: string,
-    action?() : void
+    action?() : void,
+    style? : object
 }
 
 export const PostAction = ({text,image, action}: Props) => {
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
     },
     ico: {
         height: 18,
-        width: 22
+        width: 22,
     },
     text:{
         fontSize: 14,

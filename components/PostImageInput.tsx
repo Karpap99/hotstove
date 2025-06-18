@@ -4,10 +4,11 @@ import { useState } from "react"
 import * as ImagePicker from "expo-image-picker";
 type Props = {
     id: number,
-    setImage: (id: number, uri: string, name: string, mime: string) => void
+    setImage: (id: number, uri: string, name: string, mime: string) => void,
+    onDelete: (id: number) => void
 }
 
-export const PostImageInput = ({id, setImage}: Props) => {
+export const PostImageInput = ({id, setImage, onDelete}: Props) => {
     const [error, setError] = useState(null);
     const [file, setfile] = useState({'uri': "",'fileName' : "",'mimeType' : ""})
     const pickImage = async () => {
@@ -48,7 +49,7 @@ export const PostImageInput = ({id, setImage}: Props) => {
             </View>
             <View style={styles.controls}>
                 <TouchableOpacity style={[styles.button, styles.delete_button]}>
-                    <Text style={[styles.control, styles.delete]}>
+                    <Text style={[styles.control, styles.delete]} onPress={()=>onDelete(id)}>
                         Видалити елемент
                     </Text>
                 </TouchableOpacity>

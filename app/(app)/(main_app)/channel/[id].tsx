@@ -1,12 +1,14 @@
 import { apiPrivate } from '@/common/api/api';
 import { Post } from '@/components/post';
+import { Posts } from '@/components/posts';
+import { post_short } from '@/components/types';
 import { useAuth } from '@/context/authcontext';
 import { get, save } from '@/services/store';
 import { Image } from 'expo-image';
-import { Link, useLocalSearchParams } from 'expo-router';
+import { Link, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { subscribe } from 'expo-router/build/link/linking';
-import { ComponentProps, useEffect, useState } from 'react';
-import { Platform, StyleSheet, View, Text, TouchableOpacity, ScrollView} from 'react-native';
+import { ComponentProps, useCallback, useEffect, useRef, useState } from 'react';
+import { Platform, StyleSheet, View, Text, TouchableOpacity, ScrollView, NativeSyntheticEvent, NativeScrollEvent, FlatList} from 'react-native';
 
 
 type Props = Omit<ComponentProps<typeof Link>, 'href'> & {};
@@ -16,7 +18,9 @@ type User = {
   nickname: string,
   email:string,
   description:string,
-  profile_picture: string
+  profile_picture: string,
+  followersCount: number,
+  followed: boolean
 }
 
 
@@ -25,61 +29,76 @@ type Post = {
   marking: Object,
   tags: string[]
 }
-const data =
-{
-    marking: {
-      component: "ScrollView",
-      styles: '',
-      value: '',
-      children: [
-        {
-          component: "View",
-          styles: '',
-          value: 'Buga',
-          children: []
-        }
-      ]
-    }     
-  }
+
 export default function Channel() {
   const params = useLocalSearchParams<{ id?: string }>();
-  const {user, userData} = useAuth()
-  const [User, setUser] = useState<User>()
+  const {user} = useAuth()
+  const [User, setUser] = useState<User | null>(null)
+  const loaded = useRef(false)
 
-  
-  useEffect(()=>{
-    if(params.id == user.id){
-      setUser({...user, ...userData})
-    }
-  },[])
+
+  useEffect(() => {
+    const init = async () => {
+      await getUser();
+      loaded.current = true
+    };
+    init();
+  }, [params.id]);
 
   const getUser = async () => {
-    const payload = {
-      'id': params['id']
-    }
-    const result = await apiPrivate.post('user/getUserWithContent/', payload);
+    const result = await apiPrivate.get('user/getUserWithDataById/', {params:{UserId: params.id}});
+    setUser(result.data)
   }
 
+  const followBtn = async () => {
+    if(params.id == User?.id) return
+    try {
+      if(!User?.followed) await apiPrivate.post('follower', { followTO: params.id });
+      else await apiPrivate.delete('follower', { params: { followTO: params.id } });
+      const result = await apiPrivate.get('user/getUserWithDataById/', {params:{UserId: params.id}});
+      setUser(prev => prev ? { ...prev, followed: !prev.followed, followersCount: result.data.followersCount } : prev);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  
+  
+  const ReturnFollowerStyle = () => {
+    if(params.id == user.id)
+      return "gray"
+    if(User?.followed)
+      return "gray"
+    return "red"
+  }
+
+  const ReturnFollowerInner = () => {
+    if(params.id == user.id)
+      return "Мій канал"
+    if(User?.followed)
+      return "Відписатися"
+    return "Підписатися"
+  }
 
   return (
-    <View style={{flex: 1, alignItems: "stretch"}}>
+    <View style={{flex: 1}}>
       <View style={styles.header}>
-        <View>
+        <View style={styles.user_info}>
           <Image style={styles.user_image} source={User?.profile_picture}/>
           <Text style={styles.user_name}>@{User?.nickname}</Text>
+          <Text style={styles.followers}>{User?.followersCount} підписників</Text>
         </View>
-        <TouchableOpacity style={styles.subscribe_button}>
+        <TouchableOpacity style={[styles.subscribe_button, {backgroundColor: ReturnFollowerStyle()}]} onPress={followBtn}>
           <Text style={styles.subscribe_text}>
-            Підписатися
+            {
+              ReturnFollowerInner()
+            }
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={{flex: 7}}>
-        <ScrollView style={{overflow:"hidden"}} contentContainerStyle={{alignItems: 'center', gap: 5, paddingTop:5, paddingBottom: 10}}>
-          <Post data={data}/>
-          <Post data={data}/>
-          <Post data={data}/>
-        </ScrollView>
+      <View style={{flex:1}}>
+        {
+          <Posts url='/post/getAllByUser' UserId={params.id}/>
+        }
       </View>
     </View>
   );
@@ -94,18 +113,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 15,
     gap: 20,
-    flex: 6
+    flex: 1
   },
   user_image: {
-    height: 200,
-    width: 200,
+    height: 150,
+    width: 150,
     backgroundColor: "gray",
     borderRadius: 5,
     borderColor: 'gray',
     borderWidth: 0.3
   },
   subscribe_button:{
-    width: 290,
+    width: 180,
     height: 60,
     backgroundColor: 'rgb(255, 70, 70)',
     borderRadius: 5,
@@ -115,12 +134,20 @@ const styles = StyleSheet.create({
   },
   user_name: {
     fontSize: 22,
+    color: "gray",
     fontFamily: "ComfortaaRegular",
-    textAlign: 'center', 
   },
   subscribe_text: {
     color: "white",
-    fontSize: 24,
+    fontSize: 22,
     fontFamily: "ComfortaaRegular"
+  },
+  followers:{
+    fontSize: 22,
+    fontFamily: "ComfortaaRegular",
+  },
+  user_info: {
+    display: 'flex',
+    alignItems: 'center'
   }
 });

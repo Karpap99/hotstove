@@ -1,42 +1,49 @@
 import { Image } from "expo-image"
-import React, { useState } from "react"
+import React, { memo, useState } from "react"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { PostAction } from "./postAction"
 import { Tag } from "./tag"
 import { post_short } from "./types"
 import { apiPrivate } from "@/common/api/api"
-import { AxiosError } from "axios"
+import { AxiosError, AxiosResponse } from "axios"
+import { Href, router } from "expo-router"
 
 type Props = {
     data: post_short
 }
 
-export const Post = ({data}:Props) => {
+export const Post = memo(({data}:Props) => {
     const [postData, setPostData] = useState<post_short>(data)
-    const profilePic = data.creator?.profile_picture
+    const profilePic = postData.creator?.profile_picture
         ? { uri: postData.creator.profile_picture }
         : require('@/assets/images/default_pfp.svg');
+    
 
+    const likedPic = postData.likes
+        ? require('@/assets/images/likedRed.svg')
+        : require('@/assets/images/like.svg');
+
+    const toChannel =  () => {
+        router.navigate(`/(app)/(main_app)/channel/${postData.creator.id}`as Href)
+    }
+
+    const toMessage =  () => {
+        router.navigate(`/(app)/(main_app)/messages/${postData.id}`as Href)
+    }
     
     const setLike = async () => {
-        if(postData.likes.length == 0){
-            const res = await apiPrivate.post("/like/", { postId: data.id})
-            if(typeof res !== 'undefined'){
-                const post: post_short = await apiPrivate.get('/post/byId', {data: {postId: data.id} })
-                if(typeof post !== 'undefined'){
-                    setPostData(post)
-                }
-            }
+        if(!postData.likes){
+            setPostData({...postData, likeCount: postData.likeCount + 1 , likes: {}})
+            await apiPrivate.post("/like/", { postId: data.id})
         }
         else{
-            const res = await apiPrivate.delete("/like/", {params: {postId: data.id}})
-             if(typeof res !== 'undefined'){
-                const post: post_short = await apiPrivate.get('/post/byId', {data: {postId: data.id}})
-                if(typeof post !== 'undefined'){
-                    setPostData(post)
-                }
-            }
-        }     
+            setPostData({...postData, likeCount: postData.likeCount - 1, likes: null})
+            await apiPrivate.delete("/like/", {params: {postId: data.id}})
+        }
+        const post: AxiosResponse = await apiPrivate.get('/post/byId', {params: {postId: data.id} })
+        if(typeof post !== 'undefined'){
+            setPostData(post.data)
+        }
     }
 
     return (
@@ -44,7 +51,7 @@ export const Post = ({data}:Props) => {
             <View style={styles.post_header}>
                 <View style={styles.post_header_upper}>
                     <View style={styles.post_header_left}> 
-                        <TouchableOpacity style={styles.image_container}>
+                        <TouchableOpacity style={styles.image_container} onPress={()=>{toChannel()}}>
                             <Image style={styles.image} source={profilePic} />
                         </TouchableOpacity>
                         <View>
@@ -61,35 +68,33 @@ export const Post = ({data}:Props) => {
                     </View>
                     <View style={styles.post_header_right}>
                         {
-                            postData.tags?.map(({id, name})=> (<Tag key={id} text={name}/>))
+                            postData.tags?.map(({id, content})=> (<Tag key={id} text={content}/>))
                         }
                     </View>
                 </View>
                 <Text style={styles.post_head}>{postData.title}</Text>
+                <Text style={styles.post_description}>{data.description}</Text>
             </View>
             <View style={styles.post_content}>
                 <Image style={styles.title_picture} source={postData.title_picture}/>
-                <Text>
-                    {data.description}
-                </Text>
             </View>
             <View style={styles.post_footer}>
                 <View style={styles.footer_actions}>
                     <PostAction 
                         text={(postData.likeCount ? `${postData.likeCount}` : "0")} 
-                        image={require('@/assets/images/like.svg')}
+                        image={likedPic}
                         action={setLike}
                     ></PostAction>
-                    <PostAction text="0" image={require('@/assets/images/message.svg')}></PostAction>
-                    <PostAction text="0" image={require('@/assets/images/share.svg')}></PostAction>
+                    <PostAction text={(postData.messagesCount ? `${postData.messagesCount}` : "0")}  image={require('@/assets/images/message.svg')} action={toMessage}></PostAction>
+                    <PostAction image={require('@/assets/images/share.svg')}></PostAction>
                 </View>
                 <View>
-                    <Text>{(data.views ? `${data.views}` : "0")} переглядів</Text>
+                    <Text>{(postData.views ? `${postData.views}` : "0")} переглядів</Text>
                 </View>
             </View>
         </View>
     )
-}
+})
 
 const styles = StyleSheet.create({
     post:{
@@ -115,7 +120,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     post_header: {
-        height: 90,
+        height: 120,
         padding:5,
         paddingBottom: 10,
         display:'flex',
@@ -149,7 +154,7 @@ const styles = StyleSheet.create({
         color: 'rgb(61, 60, 60)'
     },
     post_content: {
-        padding: 5,
+        padding: 1,
         alignItems: "center"
     },
     post_footer: {
@@ -180,10 +185,11 @@ const styles = StyleSheet.create({
         color: 'rgb(0, 0, 0)',
     },
     title_picture: {
-        width: "95%",
-        marginTop: 10,
+        width: "100%",
         aspectRatio: "5/4",
-        borderRadius: 2
-    
+        borderRadius: 1
+    },
+    post_description: {
+
     }
 })

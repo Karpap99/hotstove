@@ -5,10 +5,11 @@ import { TouchableOpacity, Text, StyleSheet, TextInput, View} from "react-native
 
 type Props = {
     value: string,
-    style: object
+    style: object,
+    onDelete: (id: number) => void
 }
 
-export const PostTableInput = ({value, style}: Props) => {
+export const PostTableInput = ({value, style, onDelete}: Props) => {
     const TableSegment = () => {
         const [TableKey, setTableKey] = useState<string>()
         const [TableValue, setTableValue] = useState<string>()
@@ -43,7 +44,7 @@ export const PostTableInput = ({value, style}: Props) => {
                 </Text>
             </TouchableOpacity>
             <View style={styles.controls}>
-                <TouchableOpacity style={[styles.button, styles.delete_button]}>
+                <TouchableOpacity style={[styles.button, styles.delete_button]} onPress={()=>onDelete(id)}>
                     <Text style={[styles.control, styles.delete]}>
                         Видалити елемент
                     </Text>

@@ -1,18 +1,16 @@
-import React, { ReactElement, use, useEffect, useState } from 'react';
-import { Platform, StyleSheet, TextInput, Touchable, TouchableOpacity, View, Text, ScrollView} from 'react-native';
-import { JsonToReact } from '@/components/JsonToReact';
+import React, { useState } from 'react';
+import { StyleSheet, TextInput, Touchable, TouchableOpacity, View, Text, ScrollView} from 'react-native';
 import { Input } from '@/components/input';
 import { Selector } from '@/components/selector';
 import { Image } from 'expo-image';
 import * as ImagePicker from "expo-image-picker";
 import { VideoPicker } from '@/components/videoPicker';
 import { Button } from '@/components/button';
-import { ComponentSelector } from '@/components/componentsselector';
 import { element } from '@/components/types';
-import { elementToJson} from '@/components/ReactToJson';
 import { UIgenerator } from '@/components/UIgenerator';
 import { apiPrivate } from '@/common/api/api';
 import { AxiosError, AxiosResponse } from 'axios';
+import { useRouter } from 'expo-router';
 type data = {
   marking: element,
   files: {
@@ -21,16 +19,22 @@ type data = {
     type: string
   }[]
 }
+
+type TagType = {
+  id: string,
+  content: string
+}
+
 export default function CreatePost() {
   const [publication_type, setPublicationType] = useState<boolean>(false)
   const [postName, setPostName] = useState<string>('')
   const [postDescription, setPostDescription] = useState<string>('')
-  const [postTags, setPostTags] = useState<string>('')
+  const [postTags, setPostTags] = useState<TagType[]>([])
   const [postImage, setPostImage] = useState<any>({'uri': "",'name' : "",'type' : ""})
   const [postVideo, setPostVideo] = useState<any>({'uri': "",'name' : "",'type' : ""})
   const [triger, setTriger] = useState<boolean>(false)
   const [postData, setPostData] = useState<data>()
-
+  const router = useRouter();
 
 
   const postPublication = async () => {
@@ -49,24 +53,19 @@ export default function CreatePost() {
         formdata.append('marking', JSON.stringify(marking))
         formdata.append('description', postDescription)
         formdata.append('title', postName)
+        formdata.append('tags', JSON.stringify(postTags))
         const result: AxiosResponse | void = await apiPrivate.post('/post/', formdata, {headers: {"content-type": "multipart/form-data"}})
-        .catch((err: AxiosError)=>{console.log(err)})
+        .catch((e)=>{setTriger(false), console.log(e)})
+        if(result){
+          setTriger(false)
+          router.navigate('/(app)/(main_app)')
+        }
       }
     
-    setTriger(false)
+    
     }
   }
 
-  const [Tags, setTags] = useState<object[]>([{
-    title: 'buga',
-    id: "wuga"
-  },{
-    title: 'buga',
-    id: "guga"
-  },{
-    title: 'buga',
-    id: "gruga"
-  }])
 
   const [error, setError] = useState(null);
   const pickImage = async () => {
@@ -84,6 +83,7 @@ export default function CreatePost() {
       setError(null);
     }
   }   
+
   const Pick = () => {
     if(postImage.uri != "") setPostImage({'uri': "",'fileName' : "",'mimeType' : ""});
     else pickImage()
@@ -95,7 +95,7 @@ export default function CreatePost() {
     display: "flex",
     paddingTop: 10,
     paddingBottom: 20,
-    gap: 10}}>
+    gap: 20}}>
         <View style={styles.change_type_container}>
           <TouchableOpacity style={[styles.publication_type_body, (!publication_type ? styles.active_type : "")]} onPress={()=>setPublicationType(false)}>
             <Text style={styles.publication_type}>публікація</Text>
@@ -115,7 +115,7 @@ export default function CreatePost() {
         <Text style={styles.text}> {postImage.uri != "" ? "Натисніть для видалення зображення" : "Натисніть для додавання зображення"}</Text>
         <Input text='Назва' value={postName} setValue={setPostName}/>
         <Input rows={8} limitation={1024} text='Опис' value={postDescription} setValue={setPostDescription}/>
-        <Selector values={Tags} setValue={setPostTags} text='Теги'/>
+        <Selector  setValue={setPostTags}  text='Теги'/>
         {
           publication_type ?
           <VideoPicker file={postVideo} setfile={setPostVideo}/> 

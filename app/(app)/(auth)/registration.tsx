@@ -60,9 +60,9 @@ export default function Registration() {
       return
     }
       
-    const res : AxiosResponse | void = await apiPublic.post('auth/sign-up', user).catch((e: BadRequestError)=>
+
+    const res : AxiosResponse | void = await apiPublic.post('auth/sign-up', user).catch((e)=>
     {
-      console.log(e)
       if(e["statusCode"] === 400){
         
         e.message.find((el) => {
@@ -81,10 +81,11 @@ export default function Registration() {
       }
     })
 
+
     if(res){
       const response: Response = res.data
       if(response.access != ''){
-        reg_fstage(response.access, response.refresh)
+        reg_fstage(response.access, response.refresh, response.result)
         router.navigate('/(app)/(auth)/account_setup')
       }
     }

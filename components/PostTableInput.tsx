@@ -7,67 +7,80 @@ import { Table } from "./types"
 
 type Props = {
     id: number,
-    setTable: (id: number, table: Table[]) => void
+    setTable: (id: number, table: Table[]) => void,
+    onDelete: (id: number) => void
 }
 
 type segmentProps = {
     id: number, 
-    setTableSegment: (x: number, table: Table) => void
+    setTableSegment: (x: number, table: Table) => void,
+    
 }
 
 
-const TableSegment = ({id, setTableSegment}: segmentProps) => {
-    const [table, settable] = useState<Table>({key: "", value: ""})
+const TableSegment = ({id, setTableSegment, onDeleteSegment}: segmentProps & { onDeleteSegment: (id: number) => void }) => {
+  const [table, settable] = useState<Table>({key: "", value: ""});
 
-    useEffect(()=>{
-        setTableSegment(id, table)
-    },[table])
+  useEffect(() => {
+    setTableSegment(id, table);
+  }, [table]);
 
-    return (
-        <>
-            <View style={styles.segments}>
-                <View style={styles.segment}>
-                    <TextInput style={styles.text} value={table.key} onChangeText={(e)=>{
-                        const tablePart = {
-                            ...table,
-                            key: e
-                        }
-                        settable(tablePart)
-                    }}/>
-                </View>
-                <View style={styles.segment}>
-                     <TextInput style={styles.text} value={table.value} onChangeText={(e)=>{
-                        const tablePart = {
-                            ...table,
-                            value: e
-                        }
-                        settable(tablePart)
-                        }}/>
-                </View>
-                <TouchableOpacity style={[styles.button, styles.delete_button, {width: "10%", height: '100%'}]}>
-                    <Text style={[styles.control, styles.delete]}>X</Text>
-                </TouchableOpacity>
-            </View>
-            
-        </>
-    )
-}
+  return (
+    <View style={styles.segments}>
+      <View style={styles.segment}>
+        <TextInput
+          style={styles.text}
+          value={table.key}
+          onChangeText={e => settable({...table, key: e})}
+        />
+      </View>
+      <View style={styles.segment}>
+        <TextInput
+          style={styles.text}
+          value={table.value}
+          onChangeText={e => settable({...table, value: e})}
+        />
+      </View>
+      <TouchableOpacity
+        style={[styles.button, styles.delete_button, {width: "10%", height: '100%'}]}
+        onPress={() => onDeleteSegment(id)}
+      >
+        <Text style={[styles.control, styles.delete]}>X</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 
 
-export const PostTableInput = ({id, setTable}: Props) => {
+export const PostTableInput = ({id, setTable, onDelete}: Props) => {
     const [table, settable] = useState<Table[]>([])
     const [Segments, setSegments] = useState<ReactElement[]>([])
     const [counter, setCounter] = useState<number>(0)
     
     const updTable = (indx: number, data: Table) => {
-        settable([...table, table[indx]=data])
-        setTable(id, table)
+        const newTable = [...table];
+        newTable[indx] = data;
+        settable(newTable);
+        setTable(id, newTable);
     }
+
+    const onDeleteSegment = (indx: number) => {
+        const newTable = table.filter((_, i) => i !== indx);
+        settable(newTable);
+        setTable(id, newTable);
+        setSegments(prev => prev.filter((_, i) => i !== indx));
+
+    }
+
 
     const AddSegment = () => {
         settable([...table, {key:"", value:""}])
-        setSegments([...Segments, React.createElement(TableSegment, {id: counter, setTableSegment: updTable  })])
+        setSegments(prev => [
+            ...prev,
+            <TableSegment key={counter} id={counter} setTableSegment={updTable} onDeleteSegment={onDeleteSegment} />
+        ]);
+        setCounter(prev=>prev+1)
         
     }
 
@@ -79,7 +92,7 @@ export const PostTableInput = ({id, setTable}: Props) => {
                 }
             </View>
             <View style={styles.controls}>
-                <TouchableOpacity style={[styles.button, styles.delete_button]}>
+                <TouchableOpacity style={[styles.button, styles.delete_button]} onPress={()=>onDelete(id)}>
                     <Text style={[styles.control, styles.delete]}>Видалити елемент</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.button, styles.edit_button]} onPress={()=>{AddSegment()}}>

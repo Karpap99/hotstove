@@ -6,16 +6,23 @@ import { element, marking, Table } from './types';
 
 
 type UIinner = {
-    value? : string,
-    table? : Table[],
-    uri? : string,
-    name? : string,
-    type? : string
-}
-
+  id: number,
+  value? : string,
+  table? : Table[],
+  uri? : string,
+  name? : string,
+  type? : string
+  }
+    
 type data ={
   marking: element, files: {uri: string,name: string,type: string}[]
 }
+
+type PostElement = {
+  id: number,
+  Post: ReactElement
+}
+
 
 type Props = {
     triger: boolean,
@@ -23,12 +30,12 @@ type Props = {
 }
 
 export const UIgenerator =  ({triger, setMarking}:Props) => {
-  const [post, setPost] = useState<ReactElement[]>([])
   const [counter, setCounter] = useState(0)
+  const [post, setPost] = useState<PostElement[]>([])
+  
   const [postData, setPostData] = useState<UIinner[]>([])
-
   const getMarking = async () => {
-    const dt = await elementToJson(post, postData, counter)
+    const dt = await elementToJson({post, posdData:postData})
     setMarking(dt)
   }
 
@@ -38,48 +45,54 @@ export const UIgenerator =  ({triger, setMarking}:Props) => {
     }
   },[triger])
 
-  const addEl = (x: ReactElement) => {
-    setPost([...post, x])
+  const addEl = (element: ReactElement, id: number) => {
+    setPost(prev => [...prev, { id, Post: element }]);
     setPostData([...postData, 
         {
+            id: counter,
             value : "",
             table : [],
             uri : "",
             name : "",
             type : ""
         }])
-    setCounter(counter+1)
+    setCounter(prev => prev + 1);
   }
 
-  const dellEl = (id: number, ) => {
-  }
+  const dellEl = (id: number) => {
+    setPost(prev => prev.filter(el => el.id !== id));
+    setPostData(prev => prev.filter(el => el.id !== id));
+  };
 
   const setText = (id: number, value: string,) => {
-    const new_el = {...postData[id], value: value}
-    const newPostData = [...postData]
-    newPostData[id] = new_el
-    setPostData([...newPostData])
+    setPostData(prev =>
+    prev.map(item =>
+      item.id === id ?  { ...item, value } :  item
+    )
+    );
   }
 
   const setImage= (id: number, uri: string, name: string, type: string) => {
-    const new_el = {...postData[id], uri: uri, name: name, type: type }
-    const newPostData = [...postData]
-    newPostData[id] = new_el
-    setPostData([...newPostData])
+    setPostData(prev =>
+      prev.map(item =>
+        item.id === id ? { ...item, uri, name, type } : item
+      )
+    );
   }
 
   const setTable = (id: number, table: Table[]) => {
-    const new_el = {...postData[id], table: table}
-    const newPostData = [...postData]
-    newPostData[id] = new_el
-    setPostData([...newPostData])
+    setPostData(prev =>
+      prev.map(item =>
+        item.id === id ? { ...item, table } : item
+      )
+    );
   }
 
   return (
     <View>
         <View style={styles.post_body}>
-            {post}
-            <ComponentSelector setText={setText} setImage={setImage} setTable={setTable} counter={counter} addElement={addEl}/>
+            {post.map(({id, Post})=>Post)}
+            <ComponentSelector setText={setText} setImage={setImage} setTable={setTable} nextId={counter} addElement={addEl} onDelete={dellEl}/>
         </View>
     </View>
   )

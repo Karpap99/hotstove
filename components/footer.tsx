@@ -1,22 +1,43 @@
-import {  StyleSheet, TouchableOpacity, View, Text} from "react-native"
-import { useState } from "react"
+import {  StyleSheet, TouchableOpacity, View, Text, Animated, Platform, Keyboard} from "react-native"
+import { useEffect, useRef, useState } from "react"
 import { NavButton } from "./navButton"
 import { useApp } from "@/context/appcontext"
 import { Href, RelativePathString, router, useRouter } from "expo-router"
 import { useAuth } from "@/context/authcontext"
 
+function useKeyboard() {
+        const [isKeyboardOpen, setIsKeyboardOpen] = useState(false)
+        useEffect(() => {
+            const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+            const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+            const onShow = () => setIsKeyboardOpen(true);
+            const onHide = () => setIsKeyboardOpen(false);
+
+            const showSub = Keyboard.addListener(showEvent, onShow);
+            const hideSub = Keyboard.addListener(hideEvent, onHide);
+
+            return () => {
+                showSub.remove();
+                hideSub.remove();
+            };
+        }, []);
+         return isKeyboardOpen;
+}
+
 export const Footer = () => {
     const {switchModal} = useApp()
     const {user} = useAuth()
     const router = useRouter()
+    const keyboardOpen = useKeyboard();
 
-    const ToMain = () => router.navigate(`/(app)/(main_app)`)
-    const ToChannel = () => router.navigate(`/(app)/(main_app)/channel/${user.id}`as Href)
+    const ToMain = () => router.replace(`/(app)/(main_app)`)
+    const ToChannel = () => router.replace(`/(app)/(main_app)/channel/${user.id}`as Href)
     const ToSubscribes = () => router.navigate(`/(app)/(main_app)/followed`)
     const ToCreatePost = () => router.navigate('/(app)/(main_app)/create_post')
-
+    
     return (
-        <View style={[styles.footer]} >
+        <View style={[styles.footer, (keyboardOpen ? {padding: 0} : {paddingBottom: 40})]} >
             <NavButton text="головна" image={require("@/assets/images/main.svg")} action={ToMain} />
             <NavButton text="підписки" image={require("@/assets/images/subscribes.svg")} action={ToSubscribes}/>
             <NavButton text="публікація" image={require("@/assets/images/add_content.svg")} action={ToCreatePost}/>
@@ -37,6 +58,5 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
          alignItems: 'center',
         alignContent: 'center',
-        paddingBottom: 40,
     }
 })

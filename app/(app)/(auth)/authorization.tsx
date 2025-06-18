@@ -66,7 +66,7 @@ export default function Authorization() {
           })
         }
       })
-    
+    console.log(res)
     if(res)
     if(res.data.access){
       const authorized_user = {

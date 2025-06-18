@@ -4,6 +4,7 @@ import { element, Table } from './types';
 
 
 type UIinner = {
+    id: number,
     value? : string,
     table? : Table[],
     uri? : string,
@@ -18,12 +19,14 @@ type file = {
 }
 
 type props = {
-    post: ReactElement[],
+    post: {
+        id: number,
+        Post: ReactElement
+    }[],
     posdData: UIinner[],
-    counter: number
 }
 
-export async function elementToJson(post: React.ReactElement<unknown, string | React.JSXElementConstructor<any>>[], postData: { value?: string; table?: Table[]; uri?: string; name?: string; type?: string; }[], counter: number){
+export async function elementToJson({post, posdData}:props){
     const marking : element = {
         component: "View",
         styles: {},
@@ -36,8 +39,11 @@ export async function elementToJson(post: React.ReactElement<unknown, string | R
 
     
 
-    if(typeof post !== undefined){
-        post.map((el, index)=>{
+    if(post !== undefined){
+        post.forEach(({id, Post})=>{
+            const data = posdData.find(el => el.id === id);
+            if (!data) return;
+
             const new_component : element = {
                 component: "View",
                 styles: {},
@@ -45,40 +51,36 @@ export async function elementToJson(post: React.ReactElement<unknown, string | R
                 value: "",
                 children: []
             }
-            const { type, props } = el;
-            const component_name= {type: typeof type === 'string' ? type : (type as any)?.name || 'Component'}
+
+            const { type } = Post;
+            const component_name= { type: typeof type === 'string' ? type : (type as any)?.name || 'Component' }
 
             switch(component_name.type){
                 case "PostTextInput":
                     new_component.component = "Text"
-                    new_component.value = postData[index].value
-                    marking.children.push(new_component)
+                    new_component.value = data.value ?? ""
                     break
                 case "PostTableInput":
                     new_component.component = "Table"
                     new_component.children = 
-                    postData[index].table.map((el)=>({
+                    new_component.children = (data.table ?? []).map(el => ({
                         component: "TableSegment",
                         styles: {},
                         key: el.key,
                         value: el.value,
-                        children: []
-                    }))
+                        children: [],
+                    }));
                     break
                 case "PostImageInput":
                     new_component.component = "Image"
-                    new_component.value = `file${FileCounter}`
-                    const new_file = {
-                        uri: "",
-                        name: "",
-                        type: ""
-                    }
-                    files.push(new_file)
-                    files[FileCounter].name = `file${FileCounter}`
-                    files[FileCounter].type = postData[index].type
-                    files[FileCounter].uri = postData[index].uri
-                    FileCounter += 1
-                    break
+                    new_component.value = `file${FileCounter}`;
+                    files.push({
+                        name: `file${FileCounter}`,
+                        uri: data.uri ?? "",
+                        type: data.type ?? "",
+                    });
+                    FileCounter += 1;
+                    break;
             }
             marking.children.push(new_component)
         })

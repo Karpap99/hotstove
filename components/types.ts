@@ -22,7 +22,7 @@ export type User = {
 }
 
 export type Tag = {
-  name: string,
+  content: string,
   id: string
 }
 
@@ -32,12 +32,13 @@ export type post_short = {
   title: string,
   description: string,
   title_picture: string,
-  likes: object[],
+  likes: object,
   views: number,
   creator: User,
   date: string
   tags: Tag[],
   likeCount: number,
+  messagesCount: number,
   createDateTime?: Date
 }
 

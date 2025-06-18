@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { get, save } from "@/services/store";
 import { apiPrivate } from "@/common/api/api";
 import { reg_response } from "@/components/types";
+import { t } from "i18next";
 
 type User = {
     id: string,
@@ -27,7 +28,7 @@ interface ProviderProps {
     tokens: Tokens,
     isLogged: boolean,
     login (data: User, access_token: string, refresh_token: string): void,
-    reg_fstage (access_token: string, refresh_token: string): void,
+    reg_fstage (access_token: string, refresh_token: string, result: User): void,
     reg_sstage (data: User): void,
     logout() :void,
 }
@@ -73,15 +74,17 @@ const cleanUserData = {
 const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     const [user, setUser] = useState<User>(cleanUser)
     const [userData, setUserData] = useState<UserData>(cleanUserData)
-    const [tokens, setTokens] = useState<Tokens>({access_token: get('access_token') || '', refresh_token: get('refresh_token') || '' } )
+    const [tokens, setTokens] = useState<Tokens>({access_token: get('access_token') || '', refresh_token: get('refresh_token') || '' })
     const [isLogged, setIsLogged] = useState<boolean>(tokens.access_token != '' ? true : false)
     const router = useRouter()
 
     const getUserData = async () => {
         const user_data = await apiPrivate.get('/user-data/').catch((err)=>{console.log(err)})
-        console.log(userData)
-        setUserData(user_data.data.result)
+        if (user_data?.data?.result) {
+            setUserData(user_data.data.result)
+        }
     }
+
     const refresh = async () => {
         try {
             const result = await apiPrivate.get('/auth/reauth')
@@ -98,7 +101,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
 }
 
     useEffect(()=>{
-        if(typeof tokens.refresh_token === 'string'){
+        if(tokens.refresh_token !== ""){
             (async ()=>{
                 try {
                     await refresh()
@@ -113,11 +116,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     
 
     const saveToken = async (token: string, type: "access_token" | "refresh_token") => {
-        setTokens(prevTokens => ({
-            ...prevTokens,
-        [type]: token,
-        }))
-        await save(type, token)
+        save(type, token)
+        setTokens(prev => ({ ...prev, [type]: token }))
     }
 
     const login = async (usr:User, access_token: string, refresh_token: string ) => {
@@ -125,27 +125,29 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
         setUser(usr)
         await saveToken(access_token, 'access_token')
         await saveToken(refresh_token, "refresh_token")
+        setTokens({ access_token, refresh_token })
         setIsLogged(true)
     }
 
-    const reg_fstage = async (access_token: string, refresh_token: string) => {
+    const reg_fstage = async (access_token: string, refresh_token: string, result: User) => {
         await saveToken(access_token, 'access_token')
         await saveToken(refresh_token, 'refresh_token')
+        setUser(result)
         router.navigate('/(app)/(auth)/account_setup')
     }
     
     const reg_sstage = async (usr:User) => {
-        setUser(usr)
         await getUserData()
         setIsLogged(true)
     }
 
     const logout = () => {
-        setUser(cleanUser)
-        setUserData(cleanUserData)
-        saveToken("", 'access_token')
-        saveToken("", 'refresh_token')
-        setIsLogged(false)
+        setUser(cleanUser);
+        setUserData(cleanUserData);
+        saveToken("", 'access_token');
+        saveToken("", 'refresh_token');
+        setIsLogged(false);
+        router.replace("/(app)/(auth)/authorization");
     }
 
     return (

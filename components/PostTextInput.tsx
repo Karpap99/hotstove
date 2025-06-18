@@ -1,23 +1,28 @@
-import { Children, ReactElement, ReactNode, useEffect, useState } from "react"
+import { Children, ReactElement, ReactNode, useCallback, useEffect, useState } from "react"
 import { TouchableOpacity, Text, StyleSheet, TextInput, View} from "react-native"
 
 type Props = {
     id: number,
-    setText: (id: number, x: string) => void
+    setText: (id: number, x: string) => void,
+    onDelete: (id: number) => void
 }
 
 
-export const PostTextInput = ({id, setText}: Props) => {
+export const PostTextInput = ({id, setText, onDelete}: Props) => {
     const [val, setVal] = useState<string>('')
 
-    useEffect(()=>{
-        setText(id, val)
-    },[val])
+    useEffect(() => {
+        setText(id, val);
+    }, [val, id, setText]);
+
+    const onChangeText = useCallback((text: string) => {
+        setVal(text);
+    }, []);
     return(
         <View>
-            <TextInput style={styles.text} value={val} onChangeText={(e)=>{setVal(e)}} multiline/>
+            <TextInput style={styles.text} value={val} onChangeText={(e)=>{onChangeText(e)}} multiline/>
             <View style={styles.controls}>
-                <TouchableOpacity style={styles.delete_button} onPress={()=>{}}>
+                <TouchableOpacity style={styles.delete_button} onPress={()=>{onDelete(id)}}>
                     <Text style={styles.control}>
                         Видалити елемент
                     </Text>

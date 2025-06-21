@@ -54,9 +54,10 @@ type message_to = {
 type Props = {
     dt: data,
     setMessageToAnswer: (data: message_to) => void,
+    setEditing: (data: message_to, value: string) => void
 }
 
-export const Message = ({dt, setMessageToAnswer}: Props)=> {
+export const Message = ({dt, setMessageToAnswer, setEditing}: Props)=> {
     const [Message, setMessage] = useState<data>(dt)
     const [SubMessages, setSubMessages] = useState<submsg[]>([])
     const [subVisible, setSubVisible] = useState(false)
@@ -112,6 +113,11 @@ export const Message = ({dt, setMessageToAnswer}: Props)=> {
     }
 
 
+    const setSubmessageToEdit = (data: message_to,value:string) => {
+        setEditing({...data}, value)
+    }
+
+
     const date = () => Message.createDateTime
                                     ? new Date(Message.createDateTime).toLocaleDateString('uk-UA', {
                                         day: 'numeric',
@@ -131,6 +137,21 @@ export const Message = ({dt, setMessageToAnswer}: Props)=> {
                     profile_picture: Message.user.profile_picture
                 }
             }
+        )
+    }
+
+    const setMessageToEdit = () => {
+        setEditing(
+            {
+                replyTo: 'message',
+                messageId: Message.id,
+                user: {
+                    id: Message.user.id,
+                    nickname: Message.user.nickname,
+                    profile_picture: Message.user.profile_picture
+                }
+            },
+            Message.text
         )
     }
 
@@ -164,7 +185,7 @@ export const Message = ({dt, setMessageToAnswer}: Props)=> {
                                 {
                                     user.id == Message.user.id &&
                                     <>
-                                        <TouchableOpacity style={styles.action_menu_element}>
+                                        <TouchableOpacity style={styles.action_menu_element} onPress={setMessageToEdit}>
                                             <Text style={styles.action_menu_text}>редагувати</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity style={styles.action_menu_element} onPress={onDelete}>
@@ -200,7 +221,7 @@ export const Message = ({dt, setMessageToAnswer}: Props)=> {
                     <View style={styles.submessages_wrapper}>
                         {
                         SubMessages.map((value, index)=>(
-                            <SubMessage key={index} setSubmessageToAnswer={setSubmessageToAnswer} dt={value}></SubMessage>
+                            <SubMessage key={index} setSubmessageToAnswer={setSubmessageToAnswer} setSubmessageToEdit={setSubmessageToEdit} dt={value}></SubMessage>
                         ))
                         }
                     </View>

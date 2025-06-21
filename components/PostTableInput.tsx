@@ -43,9 +43,8 @@ const TableSegment = ({id, setTableSegment, onDeleteSegment}: segmentProps & { o
       </View>
       <TouchableOpacity
         style={[styles.button, styles.delete_button, {width: "10%", height: '100%'}]}
-        onPress={() => onDeleteSegment(id)}
-      >
-        <Text style={[styles.control, styles.delete]}>X</Text>
+        onPress={() => onDeleteSegment(id)}>
+            <Text style={[styles.control, styles.delete]}>X</Text>
       </TouchableOpacity>
     </View>
   );

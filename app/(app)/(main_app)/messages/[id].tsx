@@ -74,13 +74,16 @@ export default function Messages() {
   const [messages, setMessages] = useState<Msg[]>([])
   const [MessageToAnsw, setMessageToAnsw] = useState<message_to>()
   const [AnswToMsg, setAnswToMsg] = useState<boolean>(false)
-  const isRefreshing = useRef(false)
+  const [isEditing, setIsEditing] = useState<boolean>(false)
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
 
    const refresh = useCallback(async () => {
+      setIsRefreshing(true)
       setAnswToMsg(false)
       setMessages([])
       await getMessages()
+      setIsRefreshing(false)
     },[])
 
   useEffect(()=>{
@@ -90,9 +93,23 @@ export default function Messages() {
     init()
   },[params.id])
 
+  useEffect(()=>{
+    if(!isEditing){
+      setmessageText('')
+    }
+  },[isEditing])
+
   const setMsgToAnswer = (data: message_to) => {
+    setIsEditing(false)
     setMessageToAnsw(data)
     setAnswToMsg(true)
+  }
+
+  const setEditing = (data: message_to, value: string) => {
+    setAnswToMsg(false)
+    setMessageToAnsw(data)
+    setmessageText(value)
+    setIsEditing(true)
   }
 
   const getMessages = async () => {
@@ -101,12 +118,19 @@ export default function Messages() {
   }
 
   const sendMessage = async () => {
-    if (MessageToAnsw) {
+    if (!messageText.trim()) return;
+    if (AnswToMsg && MessageToAnsw) {
       const res = await apiPrivate.post('/submessage/',{data: {messageId: MessageToAnsw.messageId,  text: messageText, receiverId: MessageToAnsw.user.id}}).catch((e)=>{console.log(e)})
-      console.log(res.data)
       if(res){
         setmessageText('')
       }
+      return
+    }
+    if (isEditing && MessageToAnsw) {
+      if(MessageToAnsw.replyTo == 'message') await apiPrivate.put('/message/',{data: {messageId: MessageToAnsw.messageId,  text: messageText}}).catch((e)=>{console.log(e)})
+      else await apiPrivate.put('/submessage/',{data: {messageId: MessageToAnsw.messageId,  text: messageText}}).catch((e)=>{console.log(e)})
+      setIsEditing(false)
+      setmessageText('')
       return
     }
     const res = await apiPrivate.post('/message/',{data: {postId: params.id, text: messageText}}).catch((e)=>{console.log(e)})
@@ -119,13 +143,13 @@ export default function Messages() {
 
 
   const renderMessageItem = useCallback(({ item }: { item: Msg }) => {
-      return <Message setMessageToAnswer={setMsgToAnswer} dt={item} />;
+      return <Message setMessageToAnswer={setMsgToAnswer} setEditing={setEditing} dt={item} />;
   }, []);
    
   return (
   <View style={{flex: 1, width: "100%"}}>
     <FlatList
-      refreshing={isRefreshing.current}
+      refreshing={isRefreshing}
       onRefresh={refresh}
       style={{flex: 1, width: "100%"}}
       data={messages}
@@ -136,15 +160,15 @@ export default function Messages() {
     />
     <Animated.View style={[styles.inputWrapper, { bottom: keyboardHeight }]}>
       {
-        AnswToMsg &&
+        (AnswToMsg || isEditing) &&
         <View style={styles.user_to_answer}>
           <View style={styles.user_to_answer_info_wrapper}>
             <View style={styles.user_to_answer_img_wrapper}>
               <Image style={styles.user_to_answer_img} source={MessageToAnsw?.user.profile_picture}/>
             </View>
-            <Text style={styles.user_to_answer_text}>відповідь користувачу: @{MessageToAnsw?.user.nickname}</Text>
+            <Text style={styles.user_to_answer_text}>{isEditing ? "редагування" : "відповідь користувачу:"} @{MessageToAnsw?.user.nickname}</Text>
           </View>
-          <TouchableOpacity onPress={()=>setAnswToMsg(false)}>
+          <TouchableOpacity onPress={()=>{setAnswToMsg(false),setIsEditing(false)}}>
             <Text>
               X
             </Text>

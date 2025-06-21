@@ -88,11 +88,19 @@ export const UIgenerator =  ({triger, setMarking}:Props) => {
     );
   }
 
+  const setList = (id: number, list: {id: number, value: string}[]) => {
+    setPostData(prev =>
+      prev.map(item =>
+        item.id === id ? { ...item, list } : item
+      )
+    );
+  }
+
   return (
     <View>
         <View style={styles.post_body}>
             {post.map(({id, Post})=>Post)}
-            <ComponentSelector setText={setText} setImage={setImage} setTable={setTable} nextId={counter} addElement={addEl} onDelete={dellEl}/>
+            <ComponentSelector setText={setText} setImage={setImage} setTable={setTable} setList={setList} nextId={counter} addElement={addEl} onDelete={dellEl}/>
         </View>
     </View>
   )

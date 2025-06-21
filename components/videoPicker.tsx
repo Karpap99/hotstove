@@ -24,9 +24,9 @@ export const VideoPicker = ({ file, setfile}: Props) => {
             const result = await ImagePicker.launchImageLibraryAsync({allowsEditing: true, mediaTypes: "videos"});
             if (!result.canceled) {
                 setfile({
-                    'uri': result.assets[0].uri,
-                    'file' : result.assets[0].fileName,
-                    'mime' : result.assets[0].mimeType
+                    uri: result.assets[0].uri,
+                    name: 'file0',
+                    type: result.assets[0].mimeType || 'video/mp4'
                 })
                 setError(null);
             }
@@ -34,7 +34,7 @@ export const VideoPicker = ({ file, setfile}: Props) => {
     };
 
     const Pick = () => {
-        if(file.uri != "") setfile({ 'uri': "", 'fileName' : "",'mimeType' : ""});
+        if(file.uri != "") setfile({ uri: "", name: "", type: "" });
         else pickImage()
     }
 

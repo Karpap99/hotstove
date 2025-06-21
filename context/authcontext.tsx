@@ -27,6 +27,7 @@ interface ProviderProps {
     userData: UserData,
     tokens: Tokens,
     isLogged: boolean,
+    isLoaded: boolean,
     login (data: User, access_token: string, refresh_token: string): void,
     reg_fstage (access_token: string, refresh_token: string, result: User): void,
     reg_sstage (data: User): void,
@@ -51,6 +52,7 @@ const AuthContext = createContext<ProviderProps>({
         refresh_token: ""
     },
     isLogged: false,
+    isLoaded: false,
     login: () => {},
     reg_fstage: ()=> {},
     reg_sstage: ()=> {},
@@ -76,6 +78,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     const [userData, setUserData] = useState<UserData>(cleanUserData)
     const [tokens, setTokens] = useState<Tokens>({access_token: get('access_token') || '', refresh_token: get('refresh_token') || '' })
     const [isLogged, setIsLogged] = useState<boolean>(tokens.access_token != '' ? true : false)
+    const [isLoaded, setIsLoaded] = useState<boolean>(false)
     const router = useRouter()
 
     const getUserData = async () => {
@@ -108,6 +111,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
                 } catch (e) {
                     console.log(e)
                     logout()
+                    setIsLoaded(true)
+                }
+                finally{
+                    setIsLoaded(true)
                 }
             })()
         }
@@ -151,7 +158,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user, userData, tokens, isLogged, login, logout, reg_fstage, reg_sstage}}>
+        <AuthContext.Provider value={{ user, userData, tokens, isLogged,isLoaded, login, logout, reg_fstage, reg_sstage}}>
             { children }
         </AuthContext.Provider>
     )

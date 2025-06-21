@@ -1,58 +1,99 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { ReactElement, useState } from "react"
 import { TouchableOpacity, Text, StyleSheet, TextInput, View} from "react-native"
+import { elementToJson } from "./ReactToJson"
+import { Table } from "./types"
 
 
 type Props = {
-    value: string,
-    style: object,
+    id: number,
+    setList: (id: number, value: {
+        id: number,
+        value: string,
+    }[]) => void,
     onDelete: (id: number) => void
 }
 
-export const PostTableInput = ({value, style, onDelete}: Props) => {
-    const TableSegment = () => {
-        const [TableKey, setTableKey] = useState<string>()
-        const [TableValue, setTableValue] = useState<string>()
-        return (
-            <View style={styles.segments}>
-                <View style={styles.segment}>
-                    <TextInput style={styles.text} value={TableKey} onChangeText={(e)=>{value = e}}/>
-                </View>
-                <View style={styles.segment}>
-                    <TextInput style={styles.text} value={TableValue} onChangeText={(e)=>{value = e}}/>
-                </View>
-            </View>
-        )
+type segmentProps = {
+    id: number, 
+    setListSegment: (x: number, value: string) => void,
+    
+}
+
+
+const ListSegment = ({id, setListSegment, onDeleteSegment}: segmentProps & { onDeleteSegment: (id: number) => void }) => {
+  const [text, setText] = useState<string>("");
+
+  useEffect(() => {
+    setListSegment(id, text);
+  }, [text]);
+
+  return (
+    <View style={styles.segments} >
+      <View style={styles.segment}>
+        <TextInput
+          style={styles.text}
+          value={text}
+          onChangeText={e => setText(e)}
+        />
+      </View>
+      <TouchableOpacity
+        style={[styles.button, styles.delete_button, {width: "10%", height: '100%'}]}
+        onPress={() => onDeleteSegment(id)}>
+            <Text style={[styles.control, styles.delete]}>X</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+
+
+export const PostListInput = ({id, setList, onDelete}: Props) => {
+    const [list, setlist] = useState<{
+        id: number,
+        value: string,
+    }[]>([])
+    const [counter, setCounter] = useState<number>(0)
+    
+    const updList = (indx: number, data: string) => {
+        const newList = list.map(item =>
+            item.id === indx ? { ...item, value: data } : item
+        );
+        setlist(newList);
+        setList(id, newList);
     }
+
+    const onDeleteSegment = (indx: number) => {
+        const newList = list.filter(item => item.id !== indx);
+        setlist(newList);
+        setList(id, newList);
+
+    }
+
 
     const AddSegment = () => {
-        const new_segment = React.createElement(TableSegment)
-        setSegments([...Segments, new_segment])
+        setlist([...list, {
+        id: counter,
+        value: "",
+        }])
+        setCounter(prev=>prev+1)
     }
 
-    const [Segments, setSegments] = useState<ReactElement[]>([])
     return(
         <View>
             <View>
                 {
-                    Segments
+                    list.map((value, index)=>(
+                        <ListSegment key={index} id={value.id} setListSegment={updList} onDeleteSegment={onDelete}/>
+                    ))
                 }
             </View>
-            <TouchableOpacity style={[styles.button, styles.edit_button, {width:"100%"}]} onPress={()=>{AddSegment()}}>
-                <Text style={[styles.control, styles.edit]}>
-                    Додати сегмент
-                </Text>
-            </TouchableOpacity>
             <View style={styles.controls}>
                 <TouchableOpacity style={[styles.button, styles.delete_button]} onPress={()=>onDelete(id)}>
-                    <Text style={[styles.control, styles.delete]}>
-                        Видалити елемент
-                    </Text>
+                    <Text style={[styles.control, styles.delete]}>Видалити елемент</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, styles.edit_button]}>
-                    <Text style={[styles.control, styles.edit]}>
-                         Редагувати зображення
-                    </Text>
+                <TouchableOpacity style={[styles.button, styles.edit_button]} onPress={()=>{AddSegment()}}>
+                    <Text style={[styles.control, styles.edit]}>Додати сегмент</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -110,9 +151,10 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         width: "100%",
+        height: 45
     },
     segment: {
-        width: "50%",
+        width: "45%",
         borderColor:'rgb(61, 60, 60)',
         borderWidth: 0.3
     }

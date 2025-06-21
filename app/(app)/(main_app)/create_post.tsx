@@ -30,42 +30,66 @@ export default function CreatePost() {
   const [postName, setPostName] = useState<string>('')
   const [postDescription, setPostDescription] = useState<string>('')
   const [postTags, setPostTags] = useState<TagType[]>([])
-  const [postImage, setPostImage] = useState<any>({'uri': "",'name' : "",'type' : ""})
-  const [postVideo, setPostVideo] = useState<any>({'uri': "",'name' : "",'type' : ""})
+  const [postImage, setPostImage] = useState<any>({uri: "",name : "",type : ""})
+  const [postVideo, setPostVideo] = useState<any>({uri: "",name : "",type : ""})
   const [triger, setTriger] = useState<boolean>(false)
   const [postData, setPostData] = useState<data>()
   const router = useRouter();
 
+  const BuildFormData = () => {
+    const formdata = new FormData()
 
-  const postPublication = async () => {
-    setTriger(true)
-    if(typeof postData !== 'undefined'){
-      if(postData?.marking.children.length > 0){
+    formdata.append('title', postName)
+    formdata.append('description', postDescription)
+   
+    formdata.append('tags', JSON.stringify(postTags))
+
+    if(!publication_type){
+      if(postData != undefined){
         const {files, marking} = postData
-        const formdata = new FormData()
         if(files.length > 0){
           files.map((file)=> {
-            formdata.append('files', file)
-          })
-          formdata.append('isPublic', 'true')
+              formdata.append('files', file)
+            })
+            formdata.append('isPublic', 'true')
         }
-        formdata.append('files', postImage)
         formdata.append('marking', JSON.stringify(marking))
-        formdata.append('description', postDescription)
-        formdata.append('title', postName)
-        formdata.append('tags', JSON.stringify(postTags))
-        const result: AxiosResponse | void = await apiPrivate.post('/post/', formdata, {headers: {"content-type": "multipart/form-data"}})
-        .catch((e)=>{setTriger(false), console.log(e)})
-        if(result){
-          setTriger(false)
-          router.navigate('/(app)/(main_app)')
-        }
       }
-    
-    
+      
     }
+    else{
+      const marking: element = {
+        component: "View",
+        styles: "",
+        value: "",
+        children: [
+        {
+          component: "Video",
+          styles: "",
+          value: "file0",
+          children: []
+        }
+        ]
+      }
+      formdata.append('marking', JSON.stringify(marking))
+      formdata.append('files', postVideo)
+    }
+     formdata.append('files', postImage) 
+    return formdata
   }
 
+  const postPublication = async () => {
+    if(!postName || !postImage || !postDescription) return
+    setTriger(true)
+    const formData = BuildFormData()
+    const result: AxiosResponse | void = await apiPrivate.post('/post/', formData, {headers: {"content-type": "multipart/form-data"}})
+    .catch((e:AxiosError)=>{setTriger(false), console.log(e.code)})
+    if(result){
+      setTriger(false)
+      router.navigate('/(app)/(main_app)')
+    }
+  }
+  
 
   const [error, setError] = useState(null);
   const pickImage = async () => {
@@ -105,12 +129,12 @@ export default function CreatePost() {
           </TouchableOpacity>
         </View>
         <TouchableOpacity style={styles.image_selector} onPress={()=>Pick()}>
-        {
-          postImage.uri != "" ? 
-            <Image style={{height:"100%", width:"100%"}} source={{uri: postImage.uri}}/>
-          : 
-          ""
-        }
+        {postImage.uri ? (
+          <Image
+            style={{ height: "100%", width: "100%"}}
+            source={{ uri: postImage.uri }}
+          />
+        ) : null}
         </TouchableOpacity>
         <Text style={styles.text}> {postImage.uri != "" ? "Натисніть для видалення зображення" : "Натисніть для додавання зображення"}</Text>
         <Input text='Назва' value={postName} setValue={setPostName}/>

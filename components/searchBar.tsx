@@ -1,17 +1,28 @@
-import { Link } from 'expo-router';
+import { useSearch } from '@/context/searchcontext';
+import { Href, Link, router } from 'expo-router';
 import { t } from 'i18next';
-import { type ComponentProps } from 'react';
+import { useState, type ComponentProps } from 'react';
 import { StyleSheet , TextInput} from 'react-native';
 
 type Props = Omit<ComponentProps<typeof Link>, 'href'> & 
 {  
-  value: string, 
-  setValue: (x: string) => void, 
+
 };
 
-export const SearchBar = ({value, setValue}: Props) => {
+export const SearchBar = ({}: Props) => {
+  const [SearchValue, setSearchValue] = useState<string>('')
+  const sumbmit = () => {
+    router.replace(`/(app)/(main_app)/?query=${SearchValue}` as Href)
+  }
+
   return (
-      <TextInput placeholder={t("SEARCH")} style={styles.input} onChangeText={(e)=>{setValue(e)}} defaultValue={value} />
+    <TextInput 
+    placeholder={t("SEARCH")} 
+    style={styles.input} 
+    onChangeText={(e)=>{setSearchValue(e)}} 
+    value={SearchValue} 
+    onSubmitEditing={sumbmit}
+    returnKeyType="search" />
   );
 }
 

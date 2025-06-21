@@ -1,12 +1,13 @@
 import { StyleSheet, View } from "react-native"
 import { useState } from "react"
 import { SearchBar } from "./searchBar"
+import SearchProvider from "@/context/searchcontext"
 
 export const Header = () => {
-    const [SearchValue, setSearchValue] = useState<string>('')
+    
     return (
         <View style={[styles.header]} >
-            <SearchBar value={SearchValue} setValue={setSearchValue} />
+            <SearchBar/>
         </View>
     )
 }

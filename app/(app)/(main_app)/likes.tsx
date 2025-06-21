@@ -3,14 +3,10 @@ import { StyleSheet, View} from 'react-native';
 import { Posts } from '@/components/posts';
 import { Href, useLocalSearchParams } from 'expo-router';
 
-export default function HomeScreen() {
-  const { query } = useLocalSearchParams();
-  const searchQuery = typeof query === 'string' ? query : '';
-
-
+export default function Likes() {
   return (
     <View style={{flex: 1}}>
-       <Posts url={`/post/`} query={searchQuery}/>
+       <Posts url={`/post/GetLikedPosts`}/>
     </View>
   );
 }

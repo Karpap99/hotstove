@@ -7,6 +7,8 @@ import { post_short } from "./types"
 import { apiPrivate } from "@/common/api/api"
 import { AxiosError, AxiosResponse } from "axios"
 import { Href, router } from "expo-router"
+import { Button } from "./button"
+import { useAuth } from "@/context/authcontext"
 
 type Props = {
     data: post_short
@@ -14,35 +16,25 @@ type Props = {
 
 export const Post = memo(({data}:Props) => {
     const [postData, setPostData] = useState<post_short>(data)
-    const profilePic = postData.creator?.profile_picture
-        ? { uri: postData.creator.profile_picture }
-        : require('@/assets/images/default_pfp.svg');
-    
+    const [actionMenu, setActionMenu] = useState(false)
+    const {user} = useAuth()
 
-    const likedPic = postData.likes
-        ? require('@/assets/images/likedRed.svg')
-        : require('@/assets/images/like.svg');
+    const profilePic = postData.creator?.profile_picture ? { uri: postData.creator.profile_picture } : require('@/assets/images/default_pfp.svg');
+    const likedPic = postData.likes ? require('@/assets/images/likedRed.svg') : require('@/assets/images/like.svg');
 
-    const toChannel =  () => {
-        router.navigate(`/(app)/(main_app)/channel/${postData.creator.id}`as Href)
-    }
-
-    const toMessage =  () => {
-        router.navigate(`/(app)/(main_app)/messages/${postData.id}`as Href)
-    }
+    const toChannel =  () =>  router.navigate(`/(app)/(main_app)/channel/${postData.creator.id}`as Href)
+    const toMessage =  () => router.navigate(`/(app)/(main_app)/messages/${postData.id}`as Href)
+    const toPost =  () =>  router.navigate(`/(app)/(main_app)/post/${postData.id}`as Href)
     
     const setLike = async () => {
         if(!postData.likes){
-            setPostData({...postData, likeCount: postData.likeCount + 1 , likes: {}})
             await apiPrivate.post("/like/", { postId: data.id})
+            setPostData({...postData, likeCount: postData.likeCount + 1 , likes: {}})
         }
         else{
-            setPostData({...postData, likeCount: postData.likeCount - 1, likes: null})
+            
             await apiPrivate.delete("/like/", {params: {postId: data.id}})
-        }
-        const post: AxiosResponse = await apiPrivate.get('/post/byId', {params: {postId: data.id} })
-        if(typeof post !== 'undefined'){
-            setPostData(post.data)
+            setPostData({...postData, likeCount: postData.likeCount - 1, likes: null})
         }
     }
 
@@ -55,29 +47,63 @@ export const Post = memo(({data}:Props) => {
                             <Image style={styles.image} source={profilePic} />
                         </TouchableOpacity>
                         <View>
-                            <Text style={styles.post_header_user}>@{postData.creator ? postData.creator?.nickname : 'default_user'}</Text>
+                            <Text style={styles.post_header_user} numberOfLines={1}>@{postData.creator ? postData.creator?.nickname : 'default_user'}</Text>
                             <Text style={styles.post_header_user}>
                                 {postData.createDateTime
                                     ? new Date(postData.createDateTime).toLocaleDateString('uk-UA', {
+                                        hour: 'numeric',
+                                        minute: 'numeric',
                                         day: 'numeric',
-                                        month: 'long',
+                                        month: 'short',
                                         year: 'numeric',
+                                        
                                 }): ''}
                             </Text>
                         </View>
                     </View>
-                    <View style={styles.post_header_right}>
-                        {
-                            postData.tags?.map(({id, content})=> (<Tag key={id} text={content}/>))
-                        }
+                    <View style={[styles.post_header_right]}>
+                       <View style={{position: 'relative', width: 120, alignItems: 'flex-end'}}>
+                            <TouchableOpacity onPress={()=>setActionMenu(!actionMenu)}>
+                                <Image style={styles.action_menu} source={require('@/assets/images/action_menu.svg')} />
+                            </TouchableOpacity>
+                            {
+                                actionMenu &&
+                                <View style={[{position: 'absolute', backgroundColor: 'white', zIndex: 2},  (user.id == postData.creator.id ? {bottom: -65} : {bottom: -20}),]}>
+                                    <TouchableOpacity style={styles.action_menu_element}>
+                                        <Text style={styles.action_menu_text}>поскаржитись</Text>
+                                    </TouchableOpacity>
+                                    {
+                                        user.id == postData.creator.id &&
+                                        <>
+                                            <TouchableOpacity style={styles.action_menu_element}>
+                                                <Text style={styles.action_menu_text}>редагувати</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity style={styles.action_menu_element} >
+                                                <Text style={[styles.action_menu_text,{color:"red"}]}>видалити</Text>
+                                            </TouchableOpacity>
+                                        </>
+                                    }
+                                </View>
+                            }
+                        </View>    
+                        <View style={styles.post_header_right_tags}>
+                            {
+                                postData.tags?.map(({id, content})=> (<Tag key={id} text={content}/>))
+                            }
+                        </View>
+                        
                     </View>
                 </View>
-                <Text style={styles.post_head}>{postData.title}</Text>
+                <Text style={styles.post_head} numberOfLines={2}>{postData.title}</Text>
                 <Text style={styles.post_description}>{data.description}</Text>
             </View>
-            <View style={styles.post_content}>
-                <Image style={styles.title_picture} source={postData.title_picture}/>
+            <View style={{alignItems: 'center', gap: 5}}>  
+                <View style={styles.post_content}>
+                    <Image style={styles.title_picture} source={postData.title_picture}/>
+                </View>
+                <Button text="Дивитися" action={toPost}/>
             </View>
+
             <View style={styles.post_footer}>
                 <View style={styles.footer_actions}>
                     <PostAction 
@@ -120,7 +146,6 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     post_header: {
-        height: 120,
         padding:5,
         paddingBottom: 10,
         display:'flex',
@@ -136,17 +161,23 @@ const styles = StyleSheet.create({
     post_header_left:{
         display:'flex',
         flexDirection: "row",
-        gap: 5
+        gap: 5,
+        
     },
     post_header_right:{
         display:'flex',
-        flexDirection: "row",
-        justifyContent: "flex-end",
-        gap: 5,
-        width: '50%',
+        alignItems:"flex-end",
         flexWrap: 'wrap',
-        maxHeight: 48, 
-        overflow: "hidden"
+        maxWidth: "45%",
+    },
+    post_header_right_tags:{
+        display:'flex',
+        flexDirection: "row",
+        gap: 5,
+        flexWrap: 'wrap',
+        maxHeight: 72, 
+        overflow: "hidden",
+        justifyContent: "flex-end",
     },
     post_header_user: {
         fontSize: 14,
@@ -180,9 +211,8 @@ const styles = StyleSheet.create({
 
     },
     post_head:{
-        fontSize: 22,
+        fontSize: 18,
         fontFamily:"ComfortaaRegular",
-        color: 'rgb(0, 0, 0)',
     },
     title_picture: {
         width: "100%",
@@ -190,6 +220,22 @@ const styles = StyleSheet.create({
         borderRadius: 1
     },
     post_description: {
-
-    }
+    fontSize: 14,
+        fontFamily:"ComfortaaRegular",
+        color: 'rgb(0, 0, 0)',
+    },
+    action_menu_element:{
+        borderWidth: 0.3,
+        padding: 2,
+        borderColor: 'rgba(0, 0, 0, 0.2)'
+    },
+    action_menu_text:{
+        fontFamily: 'ComfortaaRegular',
+        fontSize: 12
+    },
+    action_menu:{
+        height:25,
+        width: 25,
+        borderRadius: "50%"
+    },
 })

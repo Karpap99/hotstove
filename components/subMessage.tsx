@@ -5,6 +5,7 @@ import { Href, router } from "expo-router";
 import { PostAction } from "./postAction";
 import { useEffect, useState } from "react";
 import { apiPrivate } from "@/common/api/api";
+import { useAuth } from "@/context/authcontext";
 
 
 
@@ -37,15 +38,18 @@ type message_to = {
 
 type Props = {
     dt: data,
-    setSubmessageToAnswer: (x: message_to) => void
+    setSubmessageToAnswer: (x: message_to) => void,
+    setSubmessageToEdit: (data: message_to, value:string) => void
 }
 
 
 
 
 
-export const SubMessage = ({dt, setSubmessageToAnswer}: Props)=> {
+export const SubMessage = ({dt, setSubmessageToAnswer, setSubmessageToEdit}: Props)=> {
     const [Message, setMessage] = useState<data>(dt)
+    const [actionMenu, setActionMenu] = useState(false)
+    const {user} = useAuth()
     
     const setMessageToAnsw = () => {
         setSubmessageToAnswer(
@@ -58,6 +62,22 @@ export const SubMessage = ({dt, setSubmessageToAnswer}: Props)=> {
                     profile_picture: Message.user.profile_picture
                 }
             }
+        )
+    }
+    
+    
+     const setSubmessageToedit = () => {
+        setSubmessageToEdit(
+            {
+                replyTo: 'submessage',
+                messageId: Message.id,
+                user: {
+                    id: Message.user.id,
+                    nickname: Message.user.nickname,
+                    profile_picture: Message.user.profile_picture
+                }
+            },
+            Message.text
         )
     }   
     useEffect(() => {
@@ -102,19 +122,50 @@ export const SubMessage = ({dt, setSubmessageToAnswer}: Props)=> {
     }
     };
 
-
-    return(
-        <View style={styles.message_body}>
-            <View style={styles.message_header}>
-                <TouchableOpacity style={styles.image_container} onPress={()=>{toChannel()}}>
-                            <Image style={styles.image} source={profilePic} />
-                </TouchableOpacity>
-                <Text style={styles.user_nickname}>@{Message.user.nickname || 'default_user'} | {Message.createDateTime
+    const onDelete = () =>{
+        const res = apiPrivate.delete('submessage', {params: {messageId: Message.id}})
+    }
+    
+     const date = () => Message.createDateTime
                                     ? new Date(Message.createDateTime).toLocaleDateString('uk-UA', {
                                         day: 'numeric',
                                         month: 'long',
                                         year: 'numeric',
-                                }): ''}</Text>
+                                }): ''
+
+    return(
+        <View style={styles.message_body}>
+           <View style={styles.message_header}>
+                <View style={styles.message_header_content}>
+                    <TouchableOpacity style={styles.image_container} onPress={()=>{toChannel()}}>
+                        <Image style={styles.image} source={profilePic} />
+                    </TouchableOpacity>
+                     <Text style={styles.user_nickname}>@{Message.user.nickname || 'default_user'} | {date()}</Text>
+                </View>
+                <View style={{position: 'relative', width: 120, alignItems: 'flex-end'}}>
+                    <TouchableOpacity onPress={()=>setActionMenu(!actionMenu)}>
+                        <Image style={styles.action_menu} source={require('@/assets/images/action_menu.svg')} />
+                    </TouchableOpacity>
+                    {
+                        actionMenu &&
+                        <View style={{position: 'absolute', bottom: -75, backgroundColor: 'white', zIndex: 2}}>
+                            <TouchableOpacity style={styles.action_menu_element}>
+                                <Text style={styles.action_menu_text}>поскаржитись</Text>
+                            </TouchableOpacity>
+                            {
+                                user.id == Message.user.id &&
+                                    <>
+                                        <TouchableOpacity style={styles.action_menu_element} onPress={setSubmessageToedit}>
+                                            <Text style={styles.action_menu_text}>редагувати</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.action_menu_element} onPress={onDelete}>
+                                            <Text style={[styles.action_menu_text,{color:"red"}]}>видалити</Text>
+                                        </TouchableOpacity>
+                                    </>
+                                }
+                            </View>
+                    }
+                </View>        
             </View>
             <View style={styles.content}>
                 <Text style={styles.message_text}>
@@ -199,5 +250,24 @@ const styles = StyleSheet.create({
     ico: {
         height:20,
         width: 20,
-    }
+    },action_menu_element:{
+        borderWidth: 0.3,
+        padding: 2,
+        borderColor: 'rgba(0, 0, 0, 0.2)'
+    },
+    action_menu_text:{
+        fontFamily: 'ComfortaaRegular',
+        fontSize: 12
+    },
+    action_menu:{
+        height:25,
+        width: 25,
+        borderRadius: "50%"
+    },
+    message_header_content: {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 5,
+        borderBottomColor: 'black',
+    },
 })

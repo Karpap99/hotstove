@@ -27,18 +27,31 @@ export const Selector = ({ text, setValue}: Props) => {
     }
   }, [input]);
 
+
+  useEffect(() => {
+    const contents = input.split(',').map(s => s.trim()).filter(Boolean);
+    const updatedSelected = selected.filter(tag => contents.includes(tag.content));
+
+    const lastPart = contents[contents.length - 1] || "";
+    setQuery(lastPart);
+
+    if (updatedSelected.length !== selected.length) {
+      setSelected(updatedSelected);
+    }
+  }, [input]);
+
   useEffect(() => {
     if (!visible) return;
     const delayDebounce = setTimeout(() => {
       load_tags();
-    }, 3000);
+    }, 300);
 
     return () => clearTimeout(delayDebounce);
   }, [input, visible]);
 
   const Tag = useCallback(({ item }:{item: TagType}) => {
     return(
-      <TouchableOpacity style={styles.item} onPress={()=>{setSelected(prevSelected => [...prevSelected, item]); setVisible(false); }}>
+      <TouchableOpacity style={styles.item} onPress={()=>{setSelected(prev => prev.some(t => t.id === item.id) ? prev : [...prev, item]); }}>
         <Text style={styles.text}>{item.content}</Text>
       </TouchableOpacity>
     )
@@ -68,7 +81,7 @@ export const Selector = ({ text, setValue}: Props) => {
             setVisible(!visible) 
           }}>
           {visible ?
-            <TextInput placeholder={text} style={styles.input} value={input} onChangeText={InputChange}></TextInput>
+            <TextInput placeholder={text} style={styles.input} value={input} onChangeText={InputChange} onBlur={()=>setVisible(false)}></TextInput>
             :
             <Text style={styles.text}>{selected.map(tag => tag.content).join(', ') || 'Оберіть теги'}</Text>
           } 

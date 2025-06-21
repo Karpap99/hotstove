@@ -7,7 +7,7 @@ type Props = {
 export const Tag = ({text}: Props) => {
     return(
         <TouchableOpacity style={styles.tag_container}>
-            <Text style={styles.text}>{text}</Text>
+            <Text style={styles.text}   numberOfLines={1} ellipsizeMode="tail">{text}</Text>
         </TouchableOpacity>
     )
 }
@@ -25,6 +25,10 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderRadius: 3,
         paddingLeft: 5,
-        paddingRight: 5
+        paddingRight: 5,
+        backgroundColor: 'white',
+        overflow: 'hidden',
+        maxWidth: 130,
+        maxHeight: 20
     }
 })

@@ -51,7 +51,7 @@ export default function Channel() {
   }
 
   const followBtn = async () => {
-    if(params.id == User?.id) return
+    if(params.id == user.id) return
     try {
       if(!User?.followed) await apiPrivate.post('follower', { followTO: params.id });
       else await apiPrivate.delete('follower', { params: { followTO: params.id } });

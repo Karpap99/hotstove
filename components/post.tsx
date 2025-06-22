@@ -5,7 +5,6 @@ import { PostAction } from "./postAction"
 import { Tag } from "./tag"
 import { post_short } from "./types"
 import { apiPrivate } from "@/common/api/api"
-import { AxiosError, AxiosResponse } from "axios"
 import { Href, router } from "expo-router"
 import { Button } from "./button"
 import { useAuth } from "@/context/authcontext"
@@ -38,6 +37,10 @@ export const Post = memo(({data}:Props) => {
         }
     }
 
+    
+    const onDelete = async () => {
+        await apiPrivate.delete('/post/', {params: { postId: postData.id }});
+    }
     return (
         <View style={styles.post} >
             <View style={styles.post_header}>
@@ -75,10 +78,7 @@ export const Post = memo(({data}:Props) => {
                                     {
                                         user.id == postData.creator.id &&
                                         <>
-                                            <TouchableOpacity style={styles.action_menu_element}>
-                                                <Text style={styles.action_menu_text}>редагувати</Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity style={styles.action_menu_element} >
+                                            <TouchableOpacity style={styles.action_menu_element} onPress={onDelete} >
                                                 <Text style={[styles.action_menu_text,{color:"red"}]}>видалити</Text>
                                             </TouchableOpacity>
                                         </>

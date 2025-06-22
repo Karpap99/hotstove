@@ -102,7 +102,7 @@ const RenderEl = (el: element, key: number | string): React.ReactNode => {
       return <VideoEl key={key} uri={el.value} />;
     case 'Table':
       return (
-        <View style={styles.table_wrapper}>
+        <View key={key} style={styles.table_wrapper}>
             <View style={styles.table}>
             {
                 el.children.map(({key, value})=>(
@@ -115,6 +115,25 @@ const RenderEl = (el: element, key: number | string): React.ReactNode => {
                         <View style={styles.table_halfsegment}>
                             <Text style={styles.text}>
                                 {value}
+                            </Text>
+                        </View>
+                    </View>
+                ))
+            }
+            </View>
+        </View>
+        
+      );
+    case 'List':
+      return (
+        <View key={key} style={styles.table_wrapper}>
+            <View style={styles.table}>
+            {
+                el.children.map(({value}, index)=>(
+                    <View style={[styles.table_segment,{width: "100%"}]} key={index}>
+                        <View style={[styles.table_halfsegment,{width: "100%"}]}>
+                            <Text style={styles.text}>
+                              {index+1}. {value}
                             </Text>
                         </View>
                     </View>

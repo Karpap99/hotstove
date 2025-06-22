@@ -8,6 +8,15 @@ import React from 'react';
 import { PostImageInput } from './PostImageInput';
 import { PostTableInput } from './PostTableInput';
 import { PostListInput } from './PostListInput';
+type UIinner = {
+    id: number,
+    value? : string,
+    table? : Table[],
+    list? : {id: number, value: string}[],
+    uri? : string,
+    name? : string,
+    type? : string
+}
 
 type Props = Omit<ComponentProps<typeof Link>, 'href'> & 
 {
@@ -15,15 +24,16 @@ type Props = Omit<ComponentProps<typeof Link>, 'href'> &
     setText: (id: number, value: string,) => void, 
     setImage: (id: number, uri: string, name: string, type: string) => void,
     setTable: (id: number, table: Table[]) => void,
-    setList: (id: number, data:  {id: number, value: string}) => void,
+    setList: (id: number, data:  {id: number, value: string}[]) => void,
     addElement: (element: ReactElement, id: number) => void,
     onDelete: (id:number) => void,
+    data?: UIinner[]
 };
 
-export const ComponentSelector = ({ nextId, setText, setImage, setTable, setList, addElement, onDelete }: Props) => {
+export const ComponentSelector = ({ nextId, setText, setImage, setTable, setList, addElement, onDelete, data }: Props) => {
   const OnPressText = () => {
     const id = nextId;
-    const el = React.createElement(PostTextInput, { id, setText, onDelete,  key: id});
+    const el = React.createElement(PostTextInput, { id, setText, onDelete, data, key: id, });
     addElement(el, id);
   };
   const OnPressImage = () => {

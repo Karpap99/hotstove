@@ -2,13 +2,26 @@ import { TouchableOpacity, Text, StyleSheet, TextInput, View} from "react-native
 import { Image } from "expo-image"
 import { useState } from "react"
 import * as ImagePicker from "expo-image-picker";
+import { Table } from "./types";
+
+type UIinner = {
+    id: number,
+    value? : string,
+    table? : Table[],
+    list? : {id: number, value: string}[],
+    uri? : string,
+    name? : string,
+    type? : string
+}
+
 type Props = {
     id: number,
     setImage: (id: number, uri: string, name: string, mime: string) => void,
-    onDelete: (id: number) => void
+    onDelete: (id: number) => void,
+    data?: UIinner[]
 }
 
-export const PostImageInput = ({id, setImage, onDelete}: Props) => {
+export const PostImageInput = ({id, setImage, onDelete,data}: Props) => {
     const [error, setError] = useState(null);
     const [file, setfile] = useState({'uri': "",'fileName' : "",'mimeType' : ""})
     const pickImage = async () => {
@@ -42,10 +55,19 @@ export const PostImageInput = ({id, setImage, onDelete}: Props) => {
         }
         else pickImage()
     }
+
+
+    const returnImg = () => {
+        if(data){
+            if(file.uri != "") return file.uri
+            return data?.find((item) => item.id === id)?.uri;
+        }
+        return file.uri
+    }
     return(
         <View>
             <View style={styles.image_container}>
-                <Image style={styles.image} source={file.uri}/>
+                <Image style={styles.image} source={returnImg()}/>
             </View>
             <View style={styles.controls}>
                 <TouchableOpacity style={[styles.button, styles.delete_button]}>

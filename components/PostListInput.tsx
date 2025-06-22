@@ -14,10 +14,21 @@ type Props = {
     onDelete: (id: number) => void
 }
 
+
+type UIinner = {
+    id: number,
+    value? : string,
+    table? : Table[],
+    list? : {id: number, value: string}[],
+    uri? : string,
+    name? : string,
+    type? : string
+}
+
 type segmentProps = {
     id: number, 
     setListSegment: (x: number, value: string) => void,
-    
+    data?: UIinner[]
 }
 
 
@@ -48,7 +59,7 @@ const ListSegment = ({id, setListSegment, onDeleteSegment}: segmentProps & { onD
 
 
 
-export const PostListInput = ({id, setList, onDelete}: Props) => {
+export const PostListInput = ({id, setList, onDelete, data}: Props) => {
     const [list, setlist] = useState<{
         id: number,
         value: string,
@@ -154,7 +165,7 @@ const styles = StyleSheet.create({
         height: 45
     },
     segment: {
-        width: "45%",
+    width:"90%",
         borderColor:'rgb(61, 60, 60)',
         borderWidth: 0.3
     }

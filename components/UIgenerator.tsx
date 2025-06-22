@@ -3,17 +3,18 @@ import { View,Text, StyleSheet} from 'react-native';
 import { ComponentSelector } from './componentsselector';
 import { elementToJson } from './ReactToJson';
 import { element, marking, Table } from './types';
+import { JsonToEditable } from './jsonToEditable';
 
 
 type UIinner = {
-  id: number,
-  value? : string,
-  table? : Table[],
-  uri? : string,
-  name? : string,
-  type? : string
-  }
-    
+    id: number,
+    value? : string,
+    table? : Table[],
+    list? : {id: number, value: string}[],
+    uri? : string,
+    name? : string,
+    type? : string
+}
 type data ={
   marking: element, files: {uri: string,name: string,type: string}[]
 }
@@ -27,9 +28,10 @@ type PostElement = {
 type Props = {
     triger: boolean,
     setMarking: (data: data) => void,
+    json? : element
 }
 
-export const UIgenerator =  ({triger, setMarking}:Props) => {
+export const UIgenerator =  ({triger, setMarking, json}:Props) => {
   const [counter, setCounter] = useState(0)
   const [post, setPost] = useState<PostElement[]>([])
   
@@ -44,6 +46,22 @@ export const UIgenerator =  ({triger, setMarking}:Props) => {
       getMarking()
     }
   },[triger])
+
+  useEffect(() => {
+  if (json) {
+    const { posd, posdData } = JsonToEditable(json, {
+      setText,
+      setImage,
+      setTable,
+      setList,
+      addElement: addEl,
+      onDelete: dellEl
+    });
+
+    setPost(posd)
+    setPostData(posdData);
+  }
+}, [json]);
 
   const addEl = (element: ReactElement, id: number) => {
     setPost(prev => [...prev, { id, Post: element }]);
@@ -100,7 +118,7 @@ export const UIgenerator =  ({triger, setMarking}:Props) => {
     <View>
         <View style={styles.post_body}>
             {post.map(({id, Post})=>Post)}
-            <ComponentSelector setText={setText} setImage={setImage} setTable={setTable} setList={setList} nextId={counter} addElement={addEl} onDelete={dellEl}/>
+            <ComponentSelector setText={setText} setImage={setImage} setTable={setTable} setList={setList} nextId={counter} addElement={addEl} onDelete={dellEl} data={postData}/>
         </View>
     </View>
   )

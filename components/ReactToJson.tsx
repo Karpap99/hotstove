@@ -7,6 +7,7 @@ type UIinner = {
     id: number,
     value? : string,
     table? : Table[],
+    list? : {id: number, value: string}[]
     uri? : string,
     name? : string,
     type? : string
@@ -62,7 +63,6 @@ export async function elementToJson({post, posdData}:props){
                     break
                 case "PostTableInput":
                     new_component.component = "Table"
-                    new_component.children = 
                     new_component.children = (data.table ?? []).map(el => ({
                         component: "TableSegment",
                         styles: {},
@@ -81,6 +81,18 @@ export async function elementToJson({post, posdData}:props){
                     });
                     FileCounter += 1;
                     break;
+                case "PostListInput":
+                    new_component.component = "List"
+                    new_component.children = (data.list ?? []).map(el => ({
+                        component: "ListSegment",
+                        styles: {},
+                        key: "",
+                        value: el.value,
+                        children: [],
+                    }));
+
+                    FileCounter += 1;
+                    break
             }
             marking.children.push(new_component)
         })

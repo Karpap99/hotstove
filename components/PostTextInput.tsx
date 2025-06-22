@@ -1,15 +1,32 @@
 import { Children, ReactElement, ReactNode, useCallback, useEffect, useState } from "react"
 import { TouchableOpacity, Text, StyleSheet, TextInput, View} from "react-native"
+import { Table } from "./types"
+
+type UIinner = {
+    id: number,
+    value? : string,
+    table? : Table[],
+    list? : {id: number, value: string}[],
+    uri? : string,
+    name? : string,
+    type? : string
+}
 
 type Props = {
     id: number,
     setText: (id: number, x: string) => void,
-    onDelete: (id: number) => void
+    onDelete: (id: number) => void,
+    data?: UIinner[]
 }
 
 
-export const PostTextInput = ({id, setText, onDelete}: Props) => {
-    const [val, setVal] = useState<string>('')
+
+export const PostTextInput = ({id, setText, onDelete, data}: Props) => {
+    const [val, setVal] = useState<string>(() => {
+        const match = data?.find((item) => item.id === id);
+     return match?.value ?? "";
+    });
+
 
     useEffect(() => {
         setText(id, val);

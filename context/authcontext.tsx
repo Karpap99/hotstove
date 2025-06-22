@@ -128,10 +128,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     }
 
     const login = async (usr:User, access_token: string, refresh_token: string ) => {
-        await getUserData()
         setUser(usr)
         await saveToken(access_token, 'access_token')
         await saveToken(refresh_token, "refresh_token")
+        await getUserData()
         setTokens({ access_token, refresh_token })
         setIsLogged(true)
     }

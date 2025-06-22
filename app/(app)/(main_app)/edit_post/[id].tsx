@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, Touchable, TouchableOpacity, View, Text, ScrollView} from 'react-native';
 import { Input } from '@/components/input';
 import { Selector } from '@/components/selector';
@@ -10,7 +10,7 @@ import { element } from '@/components/types';
 import { UIgenerator } from '@/components/UIgenerator';
 import { apiPrivate } from '@/common/api/api';
 import { AxiosError, AxiosResponse } from 'axios';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 type data = {
   marking: element,
   files: {
@@ -25,17 +25,20 @@ type TagType = {
   content: string
 }
 
-export default function CreatePost() {
-  const [publication_type, setPublicationType] = useState<boolean>(false)
-  const [postName, setPostName] = useState<string>('')
-  const [postDescription, setPostDescription] = useState<string>('')
-  const [postTags, setPostTags] = useState<TagType[]>([])
-  const [postImage, setPostImage] = useState<any>({uri: "",name : "",type : ""})
-  const [postVideo, setPostVideo] = useState<any>({uri: "",name : "",type : ""})
-  const [triger, setTriger] = useState<boolean>(false)
-  const [postData, setPostData] = useState<data>()
-  const router = useRouter();
-
+export default function EditPost() {
+    const params = useLocalSearchParams<{ id?: string }>();
+    const [publication_type, setPublicationType] = useState<boolean>(false)
+    const [postName, setPostName] = useState<string>('')
+    const [postDescription, setPostDescription] = useState<string>('')
+    const [postTags, setPostTags] = useState<TagType[]>([])
+    const [postImage, setPostImage] = useState<any>({uri: "",name : "",type : ""})
+    const [postVideo, setPostVideo] = useState<any>({uri: "",name : "",type : ""})
+    const [triger, setTriger] = useState<boolean>(false)
+    const [postData, setPostData] = useState<data>()
+    const router = useRouter();
+    const [json, setJson] = useState<element>()
+    const [loaded, setLoaded] = useState(false)
+    
   const BuildFormData = () => {
     const formdata = new FormData()
 
@@ -47,7 +50,6 @@ export default function CreatePost() {
     if(!publication_type){
       if(postData != undefined){
         const {files, marking} = postData
-        console.log(marking.children)
         if(files.length > 0){
           files.map((file)=> {
               formdata.append('files', file)
@@ -91,9 +93,23 @@ export default function CreatePost() {
     }
   }
   
+  useEffect(() => {
+  const fetchData = async () => {
+    await getPostData();
+  };
+  fetchData();
+}, [params.id]);
 
-  const [error, setError] = useState(null);
-  const pickImage = async () => {
+  const getPostData = async () => {
+    const post = await apiPrivate.get('/post/byIdWithMarking', {params: {postId: params.id} })
+    if(typeof post !== 'undefined'){
+      setJson(post.data.marking.marking)
+    }
+    setLoaded(true)
+  }
+
+    const [error, setError] = useState(null);
+    const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted"){
       return;
@@ -113,6 +129,8 @@ export default function CreatePost() {
     if(postImage.uri != "") setPostImage({'uri': "",'fileName' : "",'mimeType' : ""});
     else pickImage()
   }
+
+  if(!loaded) return
 
   return (
     <View style={styles.container}>
@@ -145,7 +163,7 @@ export default function CreatePost() {
           publication_type ?
           <VideoPicker file={postVideo} setfile={setPostVideo}/> 
           :
-          <UIgenerator triger={triger} setMarking={setPostData} />
+          <UIgenerator triger={triger} setMarking={setPostData} json={json ? json : undefined} />
         }
         <Button text='Опубліковати' action={postPublication}/>
       </ScrollView>

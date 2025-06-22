@@ -1,9 +1,7 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { useRouter } from "expo-router";
-import { get, save } from "@/services/store";
 import { apiPrivate } from "@/common/api/api";
-import { reg_response } from "@/components/types";
-import { t } from "i18next";
+import { get, save } from "@/services/store";
+import { useRouter } from "expo-router";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type User = {
     id: string,
@@ -134,6 +132,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
         await getUserData()
         setTokens({ access_token, refresh_token })
         setIsLogged(true)
+        setIsLoaded(true)
     }
 
     const reg_fstage = async (access_token: string, refresh_token: string, result: User) => {
@@ -141,11 +140,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
         await saveToken(refresh_token, 'refresh_token')
         setUser(result)
         router.navigate('/(app)/(auth)/account_setup')
+        setIsLoaded(true)
     }
     
     const reg_sstage = async (usr:User) => {
         await getUserData()
         setIsLogged(true)
+        setIsLoaded(true)
     }
 
     const logout = () => {

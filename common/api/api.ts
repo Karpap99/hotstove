@@ -4,17 +4,15 @@ import axios from 'axios';
 
 
 const publicInstance = axios.create({
-    baseURL: "http://192.168.3.31:3000/",
+    baseURL: "https://51.20.254.187:3000/",
 });
 
 
 const privateInstance = axios.create({
-    baseURL: "http://192.168.3.31:3000/",
+    baseURL: "https://51.20.254.187:3000/",
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
         'Accept-language' : 'ukr'
     },
 });

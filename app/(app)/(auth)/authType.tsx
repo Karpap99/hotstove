@@ -6,6 +6,7 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function AuthType() {
   const {navigateAuthorization, navigateRegistration} = useRoutes();
   const {t} = useTranslation();
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>HotStove</Text>
@@ -15,7 +16,6 @@ export default function AuthType() {
         <Button text={t("REGISTRATION")} action={navigateRegistration} image={require('@/assets/images/authButton.svg')}/>
       </View>
     </View>
-    
   );
 }
 

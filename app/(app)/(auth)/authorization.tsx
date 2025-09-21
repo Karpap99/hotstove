@@ -1,5 +1,5 @@
-import {  StyleSheet,Text, View} from 'react-native';
-import {Button} from "@/components/button"
+import { StyleSheet,Text, View } from 'react-native';
+import { Button } from "@/components/button"
 import { Input } from '@/components/input';
 import { Link } from 'expo-router';
 import { useState } from 'react';
@@ -7,29 +7,16 @@ import { useTranslation } from 'react-i18next';
 import { apiPublic } from '@/common/api/api';
 import { useAuth } from '@/context/authcontext';
 import { AxiosResponse } from 'axios';
-
-
-type User = {
-  email: string,
-  password: string,
-}
+import { AuthorizationData, BadRequestError, Response } from '@/types/authorization';
 
 const cleanUser = {email: "", password: ""}
-
-type BadRequestError = {
-  message: string[],
-  error: string,
-  statusCode: number
-}
-
-
 
 export default function Authorization() {
   const {t} = useTranslation();
   const {login}= useAuth()
 
-  const [user, setUser] = useState<User>(cleanUser)
-  const [errors, setErrors] = useState<User>(cleanUser)
+  const [user, setUser] = useState<AuthorizationData>(cleanUser)
+  const [errors, setErrors] = useState<AuthorizationData>(cleanUser)
 
   const handleUpdateUser = (field: string, text: string) => {
     if(field)
@@ -56,7 +43,7 @@ export default function Authorization() {
           e.message.find((el) => {
              switch(el){
               case "password is not strong enough":
-                 setErrors({...errors, password:t('PASSWORDISWEAK')})
+                setErrors({...errors, password:t('PASSWORDISWEAK')})
                 break
               case "email must be an email":
                 setErrors({...errors, email:t('EMAILISWRONG')})
@@ -70,12 +57,8 @@ export default function Authorization() {
       })
     if(res)
     if(res.data.access){
-      const authorized_user = {
-        nickname: res.data.result.nickname,
-        email: res.data.result.email,
-        id: res.data.result.id
-      }
-      login(authorized_user, res.data.access,res.data.refresh)
+      const response: Response = res.data;
+      login(response)
     }
   }
 

@@ -2,32 +2,18 @@ import {Button} from "@/components/button"
 import { Input } from '@/components/input';
 import { StyleSheet,Text, View} from 'react-native';
 import { Link,useRouter } from 'expo-router';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { apiPublic } from "@/common/api/api";
 import { useAuth } from "@/context/authcontext";
 import { AxiosResponse } from "axios";
-
-
-type User = {
-  nickname: string, 
-  email: string,
-  password: string,
-  password2: string
-}
+import { BadRequestError, RegistrationData, Response } from "@/types/authorization";
 
 const cleanUser = {nickname: "", email: "",password: "",password2: ""}
 
-
-type Response = {
-  result: User,
-  access: string,
-  refresh: string
-}
-
 export default function Registration() {
-  const [user, setUser] = useState<User>(cleanUser)
-  const [errors, setErrors] = useState<User>(cleanUser)
+  const [user, setUser] = useState<RegistrationData>(cleanUser)
+  const [errors, setErrors] = useState<RegistrationData>(cleanUser)
 
   const {t} = useTranslation();
   const router = useRouter();
@@ -66,10 +52,9 @@ export default function Registration() {
 
       
 
-    const res : AxiosResponse | void = await apiPublic.post('auth/sign-up', user).catch((e)=>
-    {
+    const res : AxiosResponse | void = await apiPublic.post('auth/sign-up', user)
+    .catch((e: BadRequestError)=>{
       if(e["statusCode"] === 400){
-        
         e.message.find((el) => {
           switch(el){
             case "password is not strong enough":
@@ -90,7 +75,7 @@ export default function Registration() {
     if(res){
       const response: Response = res.data
       if(response.access !== ''){
-        reg_fstage(response.access, response.refresh, response.result)
+        reg_fstage(response)
         router.navigate('/(app)/(auth)/accountSetup')
       }
     }

@@ -1,24 +1,10 @@
 import { apiPrivate } from "@/common/api/api";
 import { useRoutes } from "@/hooks/useRouter";
 import { get, save } from "@/services/store";
+import { Tokens, User, UserData, Response } from "@/types/authorization";
 import { createContext, useContext, useEffect, useState } from "react";
 
-type User = {
-    id: string,
-    nickname: string,
-    email: string,
-}
 
-type UserData = {
-    profile_picture: string,
-    age: string,
-    description: string
-}
-
-type Tokens = {
-    access_token: string,
-    refresh_token: string
-}
 
 interface ProviderProps {
     user:  User,
@@ -26,8 +12,8 @@ interface ProviderProps {
     tokens: Tokens,
     isLogged: boolean,
     isLoaded: boolean,
-    login (data: User, access_token: string, refresh_token: string): void,
-    reg_fstage (access_token: string, refresh_token: string, result: User): void,
+    login (response: Response): void,
+    reg_fstage (response: Response): void,
     reg_sstage (data: User): void,
     logout() :void,
 }
@@ -89,9 +75,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
 
     const refresh = async () => {
         try {
-            const result = await apiPrivate.get('/auth/reauth')
-            if (result?.data?.result && result?.data?.access && result?.data?.refresh) {
-            await login(result.data.result, result.data.access, result.data.refresh)
+            const response: Response = await apiPrivate.get('/auth/reauth')
+            if (response) {
+                await login(response)
             }
             else {
                 logout()
@@ -130,22 +116,22 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
         await saveToken(refresh, "refresh_token")
     }
 
-    const login = async (usr:User, access_token: string, refresh_token: string ) => {
-        setUser(usr)
-        await saveTokens(access_token, refresh_token)
+    const login = async (response: Response) => {
+        setUser(response.result)
+        await saveTokens(response.access, response.refresh)
         await getUserData()
         setIsLogged(true)
         setIsLoaded(true)
     }
 
-    const reg_fstage = async (access_token: string, refresh_token: string, result: User) => {
-        await saveTokens(access_token, refresh_token)
-        setUser(result)
+    const reg_fstage = async (response: Response) => {
+        await saveTokens(response.access, response.refresh)
+        setUser(response.result)
         navigateAccountSetup()
         setIsLoaded(true)
     }
     
-    const reg_sstage = async (usr:User) => {
+    const reg_sstage = async () => {
         await getUserData()
         setIsLogged(true)
         setIsLoaded(true)

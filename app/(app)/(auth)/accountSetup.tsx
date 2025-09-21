@@ -1,6 +1,6 @@
 import { StyleSheet,Text,View} from 'react-native';
 import {Button} from "@/components/button"
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { PicPicker } from '@/components/profilepic';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/input';
@@ -9,12 +9,9 @@ import DateTimePicker, { DateType} from 'react-native-ui-datepicker';
 import { apiPrivate } from '@/common/api/api';
 import { useAuth } from '@/context/authcontext';
 import { AxiosResponse } from 'axios';
+import { FileType } from '@/types/globals';
 
-type FileType = {
-  uri: string,
-  file: string,
-  mime: string
-}
+
 
 export default function AccountSetup() {
   //controll-hooks

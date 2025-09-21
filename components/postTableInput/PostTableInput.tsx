@@ -1,9 +1,6 @@
-import React, { useEffect } from "react"
-import { ReactElement, useState } from "react"
+import { Table } from "@/types/postGeneration"
+import React, { useEffect, ReactElement, useState} from "react"
 import { TouchableOpacity, Text, StyleSheet, TextInput, View} from "react-native"
-import { elementToJson } from "./ReactToJson"
-import { Table } from "./types"
-
 
 type Props = {
     id: number,
@@ -14,7 +11,6 @@ type Props = {
 type segmentProps = {
     id: number, 
     setTableSegment: (x: number, table: Table) => void,
-    
 }
 
 

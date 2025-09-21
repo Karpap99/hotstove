@@ -1,25 +1,13 @@
-import { Link } from 'expo-router';
-import { ReactElement, useState, type ComponentProps } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import { Table, UIinner } from '@/types/postGeneration';
 import { Image } from 'expo-image';
-import { element, Table } from './types';
-import { PostTextInput } from './PostTextInput';
-import React from 'react';
-import { PostImageInput } from './PostImageInput';
-import { PostTableInput } from './PostTableInput';
-import { PostListInput } from './PostListInput';
-type UIinner = {
-    id: number,
-    value? : string,
-    table? : Table[],
-    list? : {id: number, value: string}[],
-    uri? : string,
-    name? : string,
-    type? : string
-}
+import React, { ReactElement } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { PostImageInput, PostListInput, PostTableInput, PostTextInput } from '..';
 
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & 
-{
+
+
+
+type Props = {
     nextId: number, 
     setText: (id: number, value: string,) => void, 
     setImage: (id: number, uri: string, name: string, type: string) => void,

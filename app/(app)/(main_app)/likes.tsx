@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, View} from 'react-native';
-import { Posts } from '@/components/posts';
-import { Href, useLocalSearchParams } from 'expo-router';
-
+import { Posts } from '@/components';
 export default function Likes() {
   return (
     <View style={{flex: 1}}>

@@ -1,12 +1,8 @@
 import { apiPrivate } from '@/common/api/api';
-import { Post } from '@/components/post';
-import { post_short } from '@/components/types';
-import { get, save } from '@/services/store';
-import { Axios, AxiosError } from 'axios';
+import { Posts } from '@/components';
 import { Image } from 'expo-image';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Platform, StyleSheet, View, FlatList,Text, TouchableOpacity } from 'react-native';
-import { Posts } from '@/components/posts';
+import { useCallback, useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 type User = {
   id: string,

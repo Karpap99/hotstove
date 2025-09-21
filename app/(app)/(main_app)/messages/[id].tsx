@@ -1,13 +1,11 @@
 
-import { NavButton } from '@/components/navButton';
-import { Link, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { ComponentProps, useCallback, useEffect, useRef, useState } from 'react';
-import { Platform, StyleSheet, View, TextInput, Animated, Keyboard, KeyboardEvent, TouchableOpacity, FlatList,Text} from 'react-native';
-import { Image } from 'expo-image';
-import { Message } from '@/components/message';
 import { apiPrivate } from '@/common/api/api';
+import { Message } from '@/components';
+import { Image } from 'expo-image';
+import {  useLocalSearchParams } from 'expo-router';
+import {  useCallback, useEffect, useRef, useState } from 'react';
+import { Animated, FlatList, Keyboard, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & {};
 
 function useKeyboardHeight() {
   const height = useRef(new Animated.Value(0)).current;

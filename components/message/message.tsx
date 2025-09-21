@@ -1,11 +1,9 @@
 import { View, Text, StyleSheet, TouchableOpacity} from "react-native"
-import { User } from "./types";
 import { Image } from "expo-image";
 import { Href, router } from "expo-router";
-import { PostAction } from "./postAction";
 import { useEffect, useState } from "react";
 import { apiPrivate } from "@/common/api/api";
-import { SubMessage } from "./subMessage";
+import { SubMessage, PostAction } from "..";
 import { useAuth } from "@/context/authcontext";
 
 

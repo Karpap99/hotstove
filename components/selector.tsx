@@ -1,9 +1,8 @@
 import { apiPrivate } from '@/common/api/api';
-import { Link } from 'expo-router';
-import { useCallback, useEffect, useState, type ComponentProps } from 'react';
-import { Text, StyleSheet ,View, TextInput,  ScrollView,TouchableOpacity, FlatList } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { Text, StyleSheet ,View, TextInput, TouchableOpacity } from 'react-native';
 
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & { text: string, setValue: (x: TagType[]) => void, values?: Object[]};
+type Props = { text: string, setValue: (x: TagType[]) => void, values?: Object[]};
 
 type TagType = {
   id: string,

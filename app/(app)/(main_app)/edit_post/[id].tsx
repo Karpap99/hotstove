@@ -1,24 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, TextInput, Touchable, TouchableOpacity, View, Text, ScrollView} from 'react-native';
-import { Input } from '@/components/input';
-import { Selector } from '@/components/selector';
+import { apiPrivate } from '@/common/api/api';
+import { Button, Input, Selector, UIgenerator, VideoPicker } from '@/components';
+import { element, PostData } from '@/types/postGeneration';
+import { AxiosError, AxiosResponse } from 'axios';
 import { Image } from 'expo-image';
 import * as ImagePicker from "expo-image-picker";
-import { VideoPicker } from '@/components/videoPicker';
-import { Button } from '@/components/button';
-import { element } from '@/components/types';
-import { UIgenerator } from '@/components/UIgenerator';
-import { apiPrivate } from '@/common/api/api';
-import { AxiosError, AxiosResponse } from 'axios';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-type data = {
-  marking: element,
-  files: {
-    uri: string,
-    name: string,
-    type: string
-  }[]
-}
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 type TagType = {
   id: string,
@@ -34,7 +22,7 @@ export default function EditPost() {
     const [postImage, setPostImage] = useState<any>({uri: "",name : "",type : ""})
     const [postVideo, setPostVideo] = useState<any>({uri: "",name : "",type : ""})
     const [triger, setTriger] = useState<boolean>(false)
-    const [postData, setPostData] = useState<data>()
+    const [postData, setPostData] = useState<PostData>()
     const router = useRouter();
     const [json, setJson] = useState<element>()
     const [loaded, setLoaded] = useState(false)
@@ -52,7 +40,7 @@ export default function EditPost() {
         const {files, marking} = postData
         if(files.length > 0){
           files.map((file)=> {
-              formdata.append('files', file)
+              formdata.append('files', file as any)
             })
             formdata.append('isPublic', 'true')
         }
@@ -86,7 +74,7 @@ export default function EditPost() {
     setTriger(true)
     const formData = BuildFormData()
     const result: AxiosResponse | void = await apiPrivate.post('/post/', formData, {headers: {"content-type": "multipart/form-data"}})
-    .catch((e:AxiosError)=>{setTriger(false), console.log(e.code)})
+    .catch((e:AxiosError)=>{setTriger(false)})
     if(result){
       setTriger(false)
       router.navigate('/(app)/(main_app)')
@@ -135,10 +123,10 @@ export default function EditPost() {
   return (
     <View style={styles.container}>
       <ScrollView style={{overflow: 'hidden'}} contentContainerStyle={{alignItems: "center",
-    display: "flex",
-    paddingTop: 10,
-    paddingBottom: 20,
-    gap: 20}}>
+        display: "flex",
+        paddingTop: 10,
+        paddingBottom: 20,
+        gap: 20}}>
         <View style={styles.change_type_container}>
           <TouchableOpacity style={[styles.publication_type_body, (!publication_type ? styles.active_type : "")]} onPress={()=>setPublicationType(false)}>
             <Text style={styles.publication_type}>публікація</Text>

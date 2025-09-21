@@ -1,12 +1,12 @@
-import { Link } from 'expo-router';
-import { useState, type ComponentProps } from 'react';
+import { useState } from 'react';
 import { StyleSheet ,TouchableOpacity, View, Text} from 'react-native';
 import * as ImagePicker from "expo-image-picker";
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useEvent } from 'expo';
+import { FileType } from '@/types/globals';
 
 
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & {file: any, setfile: (x: any) => void };
+type Props = {file: FileType, setfile: (x: FileType) => void };
 
 export const VideoPicker = ({ file, setfile}: Props) => {
     const [error, setError] = useState(null);
@@ -25,7 +25,7 @@ export const VideoPicker = ({ file, setfile}: Props) => {
             if (!result.canceled) {
                 setfile({
                     uri: result.assets[0].uri,
-                    name: 'file0',
+                    file: 'file0',
                     type: result.assets[0].mimeType || 'video/mp4'
                 })
                 setError(null);
@@ -34,7 +34,7 @@ export const VideoPicker = ({ file, setfile}: Props) => {
     };
 
     const Pick = () => {
-        if(file.uri != "") setfile({ uri: "", name: "", type: "" });
+        if(file.uri !== "") setfile({ uri: "", file: "", type: "" });
         else pickImage()
     }
 

@@ -1,21 +1,13 @@
-import { ScrollView, StyleSheet,Text,View} from 'react-native';
-import {Button} from "@/components/button"
-import { useEffect, useState } from 'react';
-import { PicPicker } from '@/components/profilepic';
-import { useTranslation } from 'react-i18next';
-import { Input } from '@/components/input';
-import { DatePicker } from '@/components/datepicker';
-import DateTimePicker, { DateType} from 'react-native-ui-datepicker';
 import { apiPrivate } from '@/common/api/api';
+import { Button, DatePicker, Input, PicPicker } from "@/components";
 import { useAuth } from '@/context/authcontext';
-import { AxiosError, AxiosResponse } from 'axios';
+import { FileType } from '@/types/globals';
+import { AxiosResponse } from 'axios';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 
-
-type FileType = {
-  uri: string,
-  file: string,
-  mime: string
-}
 
 export default function Profile() {
   const {reg_sstage, user, userData}= useAuth()
@@ -35,7 +27,7 @@ export default function Profile() {
       formData.append('file', {
         'uri': file.uri,
         'name': file.file,
-        'type': file.mime
+        'type': file.type
       })
     }
     if(description.length > 0) formData.append('description', description)

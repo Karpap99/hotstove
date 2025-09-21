@@ -1,18 +1,14 @@
 import { apiPrivate } from '@/common/api/api';
-import { JsonToReact } from '@/components/JsonToReact';
-import { Post } from '@/components/post';
+import { InsidePostAction } from '@/components/insidePostAction/insidePostAction';
+import { JsonToReact } from '@/components';
 import { Tag } from '@/components/tag';
-import { element, post_short } from '@/components/types';
+import { element, post_short } from '@/types/postGeneration';
 import { useAuth } from '@/context/authcontext';
-import { get, save } from '@/services/store';
 import { Image } from 'expo-image';
-import { Href, Link, router, useLocalSearchParams } from 'expo-router';
-import { subscribe } from 'expo-router/build/link/linking';
-import { ComponentProps, useEffect, useState } from 'react';
-import { Platform, StyleSheet, View, Text, TouchableOpacity, ScrollView} from 'react-native';
-import { InsidePostAction } from '@/components/insidePostAction';
+import { Href, router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & {};
 
 
 type PostType = post_short & {

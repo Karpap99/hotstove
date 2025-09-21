@@ -1,18 +1,17 @@
+import { apiPrivate } from "@/common/api/api"
+import { useAuth } from "@/context/authcontext"
+import { post_short } from "@/types/postGeneration"
 import { Image } from "expo-image"
+import { Href, router } from "expo-router"
 import React, { memo, useState } from "react"
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { PostAction } from "./postAction"
-import { Tag } from "./tag"
-import { post_short } from "./types"
-import { apiPrivate } from "@/common/api/api"
-import { Href, router } from "expo-router"
-import { Button } from "./button"
-import { useAuth } from "@/context/authcontext"
+import { Button, PostAction, Tag} from ".."
 
 type Props = {
     data: post_short
 }
 
+// eslint-disable-next-line react/display-name
 export const Post = memo(({data}:Props) => {
     const [postData, setPostData] = useState<post_short>(data)
     const [actionMenu, setActionMenu] = useState(false)
@@ -71,12 +70,12 @@ export const Post = memo(({data}:Props) => {
                             </TouchableOpacity>
                             {
                                 actionMenu &&
-                                <View style={[{position: 'absolute', backgroundColor: 'white', zIndex: 2},  (user.id == postData.creator.id ? {bottom: -65} : {bottom: -20}),]}>
+                                <View style={[{position: 'absolute', backgroundColor: 'white', zIndex: 2},  (user.id === postData.creator.id ? {bottom: -65} : {bottom: -20}),]}>
                                     <TouchableOpacity style={styles.action_menu_element}>
                                         <Text style={styles.action_menu_text}>поскаржитись</Text>
                                     </TouchableOpacity>
                                     {
-                                        user.id == postData.creator.id &&
+                                        user.id === postData.creator.id &&
                                         <>
                                             <TouchableOpacity style={styles.action_menu_element} onPress={onDelete} >
                                                 <Text style={[styles.action_menu_text,{color:"red"}]}>видалити</Text>

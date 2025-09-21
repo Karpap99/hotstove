@@ -1,13 +1,12 @@
-import { StyleSheet,Text, View } from 'react-native';
-import { Button } from "@/components/button"
-import { Input } from '@/components/input';
+import { apiPublic } from '@/common/api/api';
+import { Button, Input } from '@/components';
+import { useAuth } from '@/context/authcontext';
+import { AuthorizationData, BadRequestError, Response } from '@/types/authorization';
+import { AxiosResponse } from 'axios';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { apiPublic } from '@/common/api/api';
-import { useAuth } from '@/context/authcontext';
-import { AxiosResponse } from 'axios';
-import { AuthorizationData, BadRequestError, Response } from '@/types/authorization';
+import { StyleSheet, Text, View } from 'react-native';
 
 const cleanUser = {email: "", password: ""}
 
@@ -28,7 +27,7 @@ export default function Authorization() {
   const reg = async () => {
     setErrors(cleanUser)
     Object.entries(errors).forEach(([key, value]) => {
-      if (value === "") {
+      if ( user[key] === "") {
         setErrors(prev => ({
           ...prev,
           [key]: t("FIELDCANTBEEMPTY")

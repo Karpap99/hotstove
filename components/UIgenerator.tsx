@@ -1,43 +1,26 @@
+import { element, List, Post, PostData, Table, UIinner } from '@/types/postGeneration';
 import React, { ReactElement, useEffect, useState } from 'react';
-import { View,Text, StyleSheet} from 'react-native';
-import { ComponentSelector } from './componentsselector';
+import { StyleSheet, View } from 'react-native';
+import { ComponentSelector } from './componentSelector/componentsselector';
+import { JsonToEditable } from './jsonToEditable/jsonToEditable';
 import { elementToJson } from './ReactToJson';
-import { element, marking, Table } from './types';
-import { JsonToEditable } from './jsonToEditable';
 
 
-type UIinner = {
-    id: number,
-    value? : string,
-    table? : Table[],
-    list? : {id: number, value: string}[],
-    uri? : string,
-    name? : string,
-    type? : string
-}
-type data ={
-  marking: element, files: {uri: string,name: string,type: string}[]
-}
-
-type PostElement = {
-  id: number,
-  Post: ReactElement
-}
 
 
 type Props = {
     triger: boolean,
-    setMarking: (data: data) => void,
+    setMarking: (data: PostData) => void,
     json? : element
 }
 
 export const UIgenerator =  ({triger, setMarking, json}:Props) => {
   const [counter, setCounter] = useState(0)
-  const [post, setPost] = useState<PostElement[]>([])
-  
+  const [post, setPost] = useState<Post[]>([])
   const [postData, setPostData] = useState<UIinner[]>([])
+
   const getMarking = async () => {
-    const dt = await elementToJson({post, posdData:postData})
+    const dt = await elementToJson({post, postData:postData})
     setMarking(dt)
   }
 
@@ -49,7 +32,7 @@ export const UIgenerator =  ({triger, setMarking, json}:Props) => {
 
   useEffect(() => {
   if (json) {
-    const { posd, posdData } = JsonToEditable(json, {
+    const { post, postData } = JsonToEditable(json, {
       setText,
       setImage,
       setTable,
@@ -58,8 +41,8 @@ export const UIgenerator =  ({triger, setMarking, json}:Props) => {
       onDelete: dellEl
     });
 
-    setPost(posd)
-    setPostData(posdData);
+    setPost(post)
+    setPostData(postData);
   }
 }, [json]);
 
@@ -106,7 +89,7 @@ export const UIgenerator =  ({triger, setMarking, json}:Props) => {
     );
   }
 
-  const setList = (id: number, list: {id: number, value: string}[]) => {
+  const setList = (id: number, list: List[]) => {
     setPostData(prev =>
       prev.map(item =>
         item.id === id ? { ...item, list } : item

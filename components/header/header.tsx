@@ -1,7 +1,5 @@
 import { StyleSheet, View } from "react-native"
-import { useState } from "react"
-import { SearchBar } from "./searchBar"
-import SearchProvider from "@/context/searchcontext"
+import { SearchBar } from "../searchBar"
 
 export const Header = () => {
     

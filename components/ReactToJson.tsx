@@ -1,33 +1,17 @@
-import React, { ReactElement, useState } from 'react';
-import { View,Text } from 'react-native';
-import { element, Table } from './types';
+import { ReactElement } from 'react';
+import { element, UIinner } from '@/types/postGeneration';
+import { FileType } from '@/types/globals';
 
-
-type UIinner = {
-    id: number,
-    value? : string,
-    table? : Table[],
-    list? : {id: number, value: string}[]
-    uri? : string,
-    name? : string,
-    type? : string
-}
-
-type file = {
-    uri: string,
-    name: string,
-    type: string
-}
 
 type props = {
     post: {
         id: number,
         Post: ReactElement
     }[],
-    posdData: UIinner[],
+    postData: UIinner[],
 }
 
-export async function elementToJson({post, posdData}:props){
+export async function elementToJson({post, postData} :props){
     const marking : element = {
         component: "View",
         styles: {},
@@ -35,14 +19,14 @@ export async function elementToJson({post, posdData}:props){
         value: "",
         children: []
     }
-    const files : file[] = []
+    const files : FileType[] = []
     let FileCounter = 0
 
     
 
     if(post !== undefined){
         post.forEach(({id, Post})=>{
-            const data = posdData.find(el => el.id === id);
+            const data = postData.find(el => el.id === id);
             if (!data) return;
 
             const new_component : element = {
@@ -75,7 +59,7 @@ export async function elementToJson({post, posdData}:props){
                     new_component.component = "Image"
                     new_component.value = `file${FileCounter}`;
                     files.push({
-                        name: `file${FileCounter}`,
+                        file: `file${FileCounter}`,
                         uri: data.uri ?? "",
                         type: data.type ?? "",
                     });

@@ -1,5 +1,4 @@
-import { Button } from "@/components/button";
-import { LangRoulete } from '@/components/lang_roulete';
+import { LangRoulete, Button} from '@/components';
 import { useRoutes } from '@/hooks/useRouter';
 import { resources } from "@/lang/i18n";
 import { get } from '@/services/store';

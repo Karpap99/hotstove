@@ -1,9 +1,8 @@
-import {  StyleSheet, TouchableOpacity, View, Text, Animated, Platform, Keyboard} from "react-native"
-import { useEffect, useRef, useState } from "react"
-import { NavButton } from "./navButton"
 import { useApp } from "@/context/appcontext"
-import { Href, RelativePathString, router, useRouter } from "expo-router"
-import { useAuth } from "@/context/authcontext"
+import { useRoutes } from "@/hooks/useRouter"
+import { useEffect, useState } from "react"
+import { Keyboard, Platform, StyleSheet, View } from "react-native"
+import { NavButton } from "../navButton/navButton"
 
 function useKeyboard() {
         const [isKeyboardOpen, setIsKeyboardOpen] = useState(false)
@@ -27,21 +26,15 @@ function useKeyboard() {
 
 export const Footer = () => {
     const {switchModal} = useApp()
-    const {user} = useAuth()
-    const router = useRouter()
     const keyboardOpen = useKeyboard();
-
-    const ToMain = () => router.replace(`/(app)/(main_app)`)
-    const ToChannel = () => router.replace(`/(app)/(main_app)/channel/${user.id}`as Href)
-    const ToSubscribes = () => router.navigate(`/(app)/(main_app)/followed`)
-    const ToCreatePost = () => router.navigate('/(app)/(main_app)/create_post')
+    const {navigateMain, navigateChannel, navigateSubscribes, navigateCreatePost} = useRoutes()
     
     return (
         <View style={[styles.footer, (keyboardOpen ? {padding: 0} : {paddingBottom: 40})]} >
-            <NavButton text="головна" image={require("@/assets/images/main.svg")} action={ToMain} />
-            <NavButton text="підписки" image={require("@/assets/images/subscribes.svg")} action={ToSubscribes}/>
-            <NavButton text="публікація" image={require("@/assets/images/add_content.svg")} action={ToCreatePost}/>
-            <NavButton text="мій канал" image={require("@/assets/images/channel.svg")} action={ToChannel}/>
+            <NavButton text="головна" image={require("@/assets/images/main.svg")} action={navigateMain} />
+            <NavButton text="підписки" image={require("@/assets/images/subscribes.svg")} action={navigateSubscribes}/>
+            <NavButton text="публікація" image={require("@/assets/images/add_content.svg")} action={navigateCreatePost}/>
+            <NavButton text="мій канал" image={require("@/assets/images/channel.svg")} action={navigateChannel}/>
             <NavButton text="меню" image={require("@/assets/images/menu.svg")} action={switchModal}/>
         </View>
     )

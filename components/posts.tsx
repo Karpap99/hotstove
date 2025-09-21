@@ -1,8 +1,8 @@
-import { FlatList } from "react-native"
-import { Post } from "./post";
-import { post_short } from "./types";
-import { useCallback, useEffect, useRef, useState } from "react";
 import { apiPrivate } from "@/common/api/api";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { FlatList } from "react-native";
+import { Post } from "./post/post";
+import { post_short } from "@/types/postGeneration";
 
 
 type Props = {

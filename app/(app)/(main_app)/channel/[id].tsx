@@ -1,17 +1,12 @@
 import { apiPrivate } from '@/common/api/api';
-import { Post } from '@/components/post';
-import { Posts } from '@/components/posts';
-import { post_short } from '@/components/types';
+import { Posts } from '@/components';
 import { useAuth } from '@/context/authcontext';
-import { get, save } from '@/services/store';
 import { Image } from 'expo-image';
-import { Link, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { subscribe } from 'expo-router/build/link/linking';
-import { ComponentProps, useCallback, useEffect, useRef, useState } from 'react';
-import { Platform, StyleSheet, View, Text, TouchableOpacity, ScrollView, NativeSyntheticEvent, NativeScrollEvent, FlatList} from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & {};
 
 type User = {
   id: string,
@@ -23,12 +18,6 @@ type User = {
   followed: boolean
 }
 
-
-type Post = {
-  id: string,
-  marking: Object,
-  tags: string[]
-}
 
 export default function Channel() {
   const params = useLocalSearchParams<{ id?: string }>();
@@ -51,7 +40,7 @@ export default function Channel() {
   }
 
   const followBtn = async () => {
-    if(params.id == user.id) return
+    if(params.id === user.id) return
     try {
       if(!User?.followed) await apiPrivate.post('follower', { followTO: params.id });
       else await apiPrivate.delete('follower', { params: { followTO: params.id } });
@@ -64,7 +53,7 @@ export default function Channel() {
   
   
   const ReturnFollowerStyle = () => {
-    if(params.id == user.id)
+    if(params.id === user.id)
       return "gray"
     if(User?.followed)
       return "gray"
@@ -72,7 +61,7 @@ export default function Channel() {
   }
 
   const ReturnFollowerInner = () => {
-    if(params.id == user.id)
+    if(params.id === user.id)
       return "Мій канал"
     if(User?.followed)
       return "Відписатися"

@@ -5,7 +5,6 @@ import { Tokens, User, UserData, Response } from "@/types/authorization";
 import { createContext, useContext, useEffect, useState } from "react";
 
 
-
 interface ProviderProps {
     user:  User,
     userData: UserData,
@@ -17,7 +16,6 @@ interface ProviderProps {
     reg_sstage (data: User): void,
     logout() :void,
 }
-
 
 
 const AuthContext = createContext<ProviderProps>({
@@ -76,7 +74,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     const refresh = async () => {
         try {
             const response: Response = await apiPrivate.get('/auth/reauth')
-            if (response) {
+            if (response && response.access !== "") {
                 await login(response)
             }
             else {
@@ -103,8 +101,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
             })()
         }
     }, [])
-
-    
 
     const saveToken = async (token: string, type: "access_token" | "refresh_token") => {
         save(type, token)

@@ -1,9 +1,6 @@
-import { Link } from 'expo-router';
-import { useState, type ComponentProps } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import {Shadow} from "react-native-shadow-2"
 
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & {text: string, value?: string, setValue?: (x: string) => void, active?: boolean, setActive: () => void};
+type Props = {text: string, value?: string, setValue?: (x: string) => void, active?: boolean, setActive: () => void};
 
 export const DatePicker = (props: Props) => {
     return (

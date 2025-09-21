@@ -1,15 +1,10 @@
-import { Link } from 'expo-router';
-import { useState, type ComponentProps } from 'react';
+import { useState } from 'react';
 import { StyleSheet ,TouchableOpacity, View, Text} from 'react-native';
 import * as ImagePicker from "expo-image-picker";
 import { Image } from 'expo-image';
-type FileType = {
-  uri: string,
-  file: string,
-  mime: string
-}
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & 
-{
+import { FileType } from '@/types/globals';
+
+type Props = {
     file: FileType | null;
     setFile: (x: FileType | null) => void;
 };
@@ -29,8 +24,8 @@ export const PicPicker = ({ file, setFile}: Props) => {
                 setFile({
                     'uri': result.assets[0].uri,
                     'file' : result.assets[0].fileName,
-                    'mime' : result.assets[0].mimeType
-                })
+                    'type' : result.assets[0].mimeType
+                } as FileType)
                 setError(null);
             }
         }   

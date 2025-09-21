@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, View} from 'react-native';
 import { Posts } from '@/components/posts';
-import { Href, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function HomeScreen() {
   const { query } = useLocalSearchParams();

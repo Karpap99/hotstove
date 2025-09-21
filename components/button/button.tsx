@@ -1,9 +1,7 @@
-import { Link} from 'expo-router';
-import { act, type ComponentProps } from 'react';
-import { TouchableOpacity, Text, StyleSheet ,View} from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & { text: string, action?: () => void, image?: string};
+type Props = { text: string, action?: () => void, image?: string};
 
 export const Button = ({text, action, image}: Props) => {
   return (

@@ -1,4 +1,4 @@
-import { Button } from "@/components/button";
+import { Button } from "@/components";
 import { useRoutes } from '@/hooks/useRouter';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';

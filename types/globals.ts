@@ -1,5 +1,12 @@
 export type FileType = {
   uri: string,
   file: string,
-  mime: string
+  type: string
+}
+
+
+export type User = {
+  id: string,
+  nickname: string,
+  profile_picture: string
 }

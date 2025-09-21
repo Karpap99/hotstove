@@ -1,15 +1,12 @@
-import { Link } from 'expo-router';
-import { useRef, useState, type ComponentProps } from 'react';
-import { StyleSheet ,TouchableOpacity, Image, ScrollView, Text, View} from 'react-native';
-import { Lang } from './types';
+import { useState } from 'react';
+import { StyleSheet ,TouchableOpacity,  ScrollView, Text, View} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import { useEffect } from 'react';
 import { save } from '@/services/store';
-import {Shadow} from "react-native-shadow-2"
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & {langs: Object};
+
+type Props = {langs: Object};
 
 export const LangRoulete = ({langs}: Props) => {
-    const {i18n, t} = useTranslation();
+    const {i18n} = useTranslation();
     const [currL, setcurrL] = useState<string>()
 
 

@@ -1,15 +1,12 @@
-import { StyleSheet,Text,View} from 'react-native';
-import {Button} from "@/components/button"
-import { useState } from 'react';
-import { PicPicker } from '@/components/profilepic';
-import { useTranslation } from 'react-i18next';
-import { Input } from '@/components/input';
-import { DatePicker } from '@/components/datepicker';
-import DateTimePicker, { DateType} from 'react-native-ui-datepicker';
 import { apiPrivate } from '@/common/api/api';
+import { Button, DatePicker, Input, PicPicker } from '@/components';
 import { useAuth } from '@/context/authcontext';
-import { AxiosResponse } from 'axios';
 import { FileType } from '@/types/globals';
+import { AxiosResponse } from 'axios';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, Text, View } from 'react-native';
+import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 
 
 
@@ -33,7 +30,7 @@ export default function AccountSetup() {
       formData.append('file', {
         'uri': file.uri,
         'name': file.file,
-        'type': file.mime
+        'type': file.type
       } as any)
     }
     if(description.length > 0) formData.append('description', description)

@@ -1,16 +1,7 @@
-import { Children, ReactElement, ReactNode, useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { TouchableOpacity, Text, StyleSheet, TextInput, View} from "react-native"
-import { Table } from "./types"
+import { UIinner } from "@/types/postGeneration"
 
-type UIinner = {
-    id: number,
-    value? : string,
-    table? : Table[],
-    list? : {id: number, value: string}[],
-    uri? : string,
-    name? : string,
-    type? : string
-}
 
 type Props = {
     id: number,

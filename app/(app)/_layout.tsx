@@ -1,6 +1,4 @@
 import { Stack } from 'expo-router';
-import 'react-native-reanimated';
-import "@/lang/i18n.ts"
 import  { useAuth } from '@/context/authcontext';
 
 export default function AppLayout() {

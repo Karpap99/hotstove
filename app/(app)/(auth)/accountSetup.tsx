@@ -8,8 +8,7 @@ import { DatePicker } from '@/components/datepicker';
 import DateTimePicker, { DateType} from 'react-native-ui-datepicker';
 import { apiPrivate } from '@/common/api/api';
 import { useAuth } from '@/context/authcontext';
-import { AxiosError, AxiosResponse } from 'axios';
-
+import { AxiosResponse } from 'axios';
 
 type FileType = {
   uri: string,
@@ -17,55 +16,62 @@ type FileType = {
   mime: string
 }
 
-export default function Account_setup() {
+export default function AccountSetup() {
+  //controll-hooks
+  const {t} = useTranslation();
+  const {reg_sstage, user}= useAuth()
+  //data-hooks
   const [description, setDescription] = useState<string>('')
   const [file, setFile] = useState<FileType | null>(null)
-  const {t} = useTranslation();
+  const [selected, setSelected] = useState<DateType | null>(new Date());
+  //helper-hooks
   const [active, setActive] = useState<boolean>(false)
-  const [selected, setSelected] = useState<DateType>(new Date());
   const [date, setDate] = useState<string>()
-  const {reg_sstage, user}= useAuth()
+  
 
   const UpdateAccount = async () => {
     const formData = new FormData()
-
     if(file){
       formData.append('isPublic', 'true')
       formData.append('file', {
         'uri': file.uri,
         'name': file.file,
         'type': file.mime
-      })
+      } as any)
     }
     if(description.length > 0) formData.append('description', description)
     if(selected) formData.append('age', new Date(selected.toString()).toISOString())
-    const result: AxiosResponse | void = await apiPrivate.put('/user-data/', formData, {headers: {"content-type": "multipart/form-data"}})
-    if(result) if(result.data['res'] === "updated") reg_sstage({...user, ...result.data['result']})
+    const result: AxiosResponse | void = await apiPrivate.put('/user-data/', formData, {
+      headers: { "Content-Type": "multipart/form-data" }
+    }) 
+    if (result?.data?.res === "updated" && result.data.result) {
+      reg_sstage({ ...user, ...result.data.result });
+    }
   }
 
-  const activeState = () => {
-    setActive(!active)
-  }
-
-  useEffect(()=>{
+  const handelDateChange = (date: DateType | null) => {
+    if(!date) return
+    setSelected(date)
     if(selected){
       const dt = new Date(selected.toString())
       setDate((dt.getMonth()+1)+"-"+dt.getDate()+"-"+dt.getFullYear())
     }
-  },[selected])
+    setActive(false)
+  }
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{t('SETTINGS')}</Text>
-      <PicPicker file={file} setfile={setFile}/>
+      <PicPicker file={file} setFile={setFile}/>
       <Input text={t('DESCRIPTION')} value={description} setValue={setDescription} rows={6} limitation={512}/>
-      <DatePicker text={t('BIRTHDATE')} setActive={activeState} value={date}/>
+      <DatePicker text={t('BIRTHDATE')} setActive={() => setActive(prev => !prev)} value={date}/>
       <Button text={t('NEXT')} action={UpdateAccount}/>
       {
         active && <DateTimePicker style={styles.callendarContainer}
             mode="single"
             date={selected}
-            onChange={({ date }) => { setSelected(date), setActive(false)}}
+            onChange={({ date }) => handelDateChange(date)}
             styles={
             {
               day_label: {

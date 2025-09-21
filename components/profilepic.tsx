@@ -1,17 +1,20 @@
 import { Link } from 'expo-router';
-import { useEffect, useState, type ComponentProps } from 'react';
+import { useState, type ComponentProps } from 'react';
 import { StyleSheet ,TouchableOpacity, View, Text} from 'react-native';
 import * as ImagePicker from "expo-image-picker";
 import { Image } from 'expo-image';
-import { File } from './types';
 type FileType = {
   uri: string,
   file: string,
   mime: string
 }
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & {file: FileType, setfile: (x: any) => void };
+type Props = Omit<ComponentProps<typeof Link>, 'href'> & 
+{
+    file: FileType | null;
+    setFile: (x: FileType | null) => void;
+};
 
-export const PicPicker = ({ file, setfile}: Props) => {
+export const PicPicker = ({ file, setFile}: Props) => {
     const [error, setError] = useState(null);
 
     const pickImage = async () => {
@@ -23,7 +26,7 @@ export const PicPicker = ({ file, setfile}: Props) => {
                     allowsEditing: true
                 });
             if (!result.canceled) {
-                setfile({
+                setFile({
                     'uri': result.assets[0].uri,
                     'file' : result.assets[0].fileName,
                     'mime' : result.assets[0].mimeType
@@ -34,9 +37,7 @@ export const PicPicker = ({ file, setfile}: Props) => {
     };
 
     const Pick = () => {
-        if(file){
-            setfile(null);
-        } 
+        if(file){setFile(null);} 
         else pickImage()
     }
 

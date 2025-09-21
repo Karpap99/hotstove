@@ -1,6 +1,6 @@
 import { apiPrivate } from "@/common/api/api";
+import { useRoutes } from "@/hooks/useRouter";
 import { get, save } from "@/services/store";
-import { useRouter } from "expo-router";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type User = {
@@ -72,12 +72,13 @@ const cleanUserData = {
 
 
 const AuthProvider = ({ children }: { children: React.ReactNode}) => {
+    const {navigateAuthorization, navigateAccountSetup} = useRoutes()
+
     const [user, setUser] = useState<User>(cleanUser)
     const [userData, setUserData] = useState<UserData>(cleanUserData)
     const [tokens, setTokens] = useState<Tokens>({access_token: get('access_token') || '', refresh_token: get('refresh_token') || '' })
-    const [isLogged, setIsLogged] = useState<boolean>(tokens.access_token != '' ? true : false)
+    const [isLogged, setIsLogged] = useState<boolean>(tokens.access_token !== '' ? true : false)
     const [isLoaded, setIsLoaded] = useState<boolean>(false)
-    const router = useRouter()
 
     const getUserData = async () => {
         const user_data = await apiPrivate.get('/user-data/').catch((err)=>{console.log(err)})
@@ -99,7 +100,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
             console.log(error)
             logout()
         }
-}
+    }
 
     useEffect(()=>{
         if(tokens.refresh_token !== ""){
@@ -107,7 +108,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
                 try {
                     await refresh()
                 } catch (e) {
-                    console.log(e)
                     logout()
                     setIsLoaded(true)
                 }
@@ -125,21 +125,23 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
         setTokens(prev => ({ ...prev, [type]: token }))
     }
 
+    const saveTokens = async (access: string, refresh: string) => {
+        await saveToken(access, 'access_token')
+        await saveToken(refresh, "refresh_token")
+    }
+
     const login = async (usr:User, access_token: string, refresh_token: string ) => {
         setUser(usr)
-        await saveToken(access_token, 'access_token')
-        await saveToken(refresh_token, "refresh_token")
+        await saveTokens(access_token, refresh_token)
         await getUserData()
-        setTokens({ access_token, refresh_token })
         setIsLogged(true)
         setIsLoaded(true)
     }
 
     const reg_fstage = async (access_token: string, refresh_token: string, result: User) => {
-        await saveToken(access_token, 'access_token')
-        await saveToken(refresh_token, 'refresh_token')
+        await saveTokens(access_token, refresh_token)
         setUser(result)
-        router.navigate('/(app)/(auth)/account_setup')
+        navigateAccountSetup()
         setIsLoaded(true)
     }
     
@@ -149,13 +151,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
         setIsLoaded(true)
     }
 
-    const logout = () => {
+    const logout = async () => {
         setUser(cleanUser);
         setUserData(cleanUserData);
-        saveToken("", 'access_token');
-        saveToken("", 'refresh_token');
+        await saveTokens("", "")
         setIsLogged(false);
-        router.replace("/(app)/(auth)/authorization");
+        navigateAuthorization()
     }
 
     return (

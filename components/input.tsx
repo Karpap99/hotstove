@@ -1,20 +1,35 @@
-import { Link } from 'expo-router';
-import { useEffect, useState, type ComponentProps } from 'react';
 import { Text, StyleSheet ,View, TextInput} from 'react-native';
-type Props = Omit<ComponentProps<typeof Link>, 'href'> & 
-{ 
+
+
+type SingleInputProps = {
+  setValue: (value: string) => void;
+};
+
+type ObjectInputProps = {
+  setValue: (row: string, value: string) => void;
+  field: string;
+};
+
+type Props = (SingleInputProps | ObjectInputProps) & { 
   text: string, 
-  value: string, 
-  setValue: (x: string) => void, 
+  value: string,
   rows?: number, 
   limitation?: number, 
   password?: boolean,
   error?: string,
 };
 
-export const Input = ({ text, value, setValue, rows, limitation, password,error}: Props) => {
+export const Input = (props: Props) => {
+  const {text, value, rows, limitation, password, error} = props
+
+
+  const handleChange = (data: string) => {
+    if("field" in props) props.setValue(props.field, data)
+    else props.setValue(data)
+  }
+  
   return (
-    <View >
+    <View>
         <Text style={styles.text}>{text}</Text>
         <TextInput 
           multiline={rows ? true : false} 
@@ -22,7 +37,7 @@ export const Input = ({ text, value, setValue, rows, limitation, password,error}
           numberOfLines={rows} 
           placeholder={text} 
           style={[styles.input, rows ? {height: 18 * rows, textAlignVertical: 'top', textAlign:"left"} : null]} 
-          onChangeText={(e)=>{setValue(e)}} maxLength={limitation} defaultValue={value} /> 
+          onChangeText={(e)=>{handleChange(e)}} maxLength={limitation} defaultValue={value} /> 
         <Text style={[styles.text, {fontSize:12 }, !limitation ? {display: "none"} : null]}>{value.length}/{limitation}</Text>
         <Text style={[styles.text, {fontSize:10, color:'red', lineHeight: 13, paddingLeft: 2},(error ? {visibility: 'none'} : null)]}>{error}</Text> 
     </View>
@@ -48,3 +63,7 @@ const styles = StyleSheet.create({
     fontFamily:"ComfortaaRegular"
   }
 });
+function setValue(field: string, data: string) {
+  throw new Error('Function not implemented.');
+}
+

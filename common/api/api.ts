@@ -4,12 +4,12 @@ import axios from 'axios';
 
 
 const publicInstance = axios.create({
-    baseURL: "https://51.20.254.187:3000/",
+    baseURL: "http://192.168.3.34:3000/",
 });
 
 
 const privateInstance = axios.create({
-    baseURL: "https://51.20.254.187:3000/",
+    baseURL: "http://192.168.3.34:3000/",
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -35,7 +35,9 @@ privateInstance.interceptors.request.use(
         config.headers['Cookie'] = `${refreshToken}`;
         return config;
     },
-    error => Promise.reject(error),
+    error => {
+        console.log(error)
+    },
 );
 
 

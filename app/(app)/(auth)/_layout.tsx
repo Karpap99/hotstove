@@ -1,9 +1,7 @@
 import { Tabs } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { Platform } from 'react-native';
+import React from 'react';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import {Button} from "@/components/button"
 
 
 export default function TabLayout() {
@@ -16,10 +14,10 @@ export default function TabLayout() {
             tabBarStyle: {display:"none"},
           }}>
       <Tabs.Screen name='index' options={{  headerShown: false }}/>
-      <Tabs.Screen name='auth_type' options={{  headerShown: false }}/>
+      <Tabs.Screen name='authType' options={{  headerShown: false }}/>
       <Tabs.Screen name='authorization' options={{  headerShown: false }}/>
       <Tabs.Screen name='registration' options={{  headerShown: false }}/>
-      <Tabs.Screen name='account_setup' options={{headerShown: false}}/>
+      <Tabs.Screen name='accountSetup' options={{headerShown: false}}/>
     </Tabs>
   );
 }

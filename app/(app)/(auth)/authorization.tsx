@@ -1,5 +1,4 @@
 import {  StyleSheet,Text, View} from 'react-native';
-import { save} from '@/services/store';
 import {Button} from "@/components/button"
 import { Input } from '@/components/input';
 import { Link } from 'expo-router';
@@ -24,29 +23,32 @@ type BadRequestError = {
 }
 
 
-type Response = {
-  result: User,
-  access: string,
-  refresh: string
-}
-
 
 export default function Authorization() {
   const {t} = useTranslation();
   const {login}= useAuth()
+
   const [user, setUser] = useState<User>(cleanUser)
   const [errors, setErrors] = useState<User>(cleanUser)
-  
-  const setEmail = (x: string) => setUser({...user, email: x})
-  const setPassword = (x: string) => setUser({...user, password: x})
+
+  const handleUpdateUser = (field: string, text: string) => {
+    if(field)
+    setUser(prev => {
+     return {...prev, [field]:text}
+    })
+  }
 
   const reg = async () => {
     setErrors(cleanUser)
-    if(user.email == "" || user.password == "" ){
-      if(user.email == "") setErrors({...errors, email:t("FIELDCANTBEEMPTY")})
-      if(user.password == "") setErrors({...errors, password:t("FIELDCANTBEEMPTY")})
-      return
-    }
+    Object.entries(errors).forEach(([key, value]) => {
+      if (value === "") {
+        setErrors(prev => ({
+          ...prev,
+          [key]: t("FIELDCANTBEEMPTY")
+        }));
+      }
+    });
+
     const res : AxiosResponse | void = await apiPublic.post('/auth/login', user)
     .catch((e: BadRequestError)=>
       {
@@ -66,7 +68,6 @@ export default function Authorization() {
           })
         }
       })
-    console.log(res)
     if(res)
     if(res.data.access){
       const authorized_user = {
@@ -81,9 +82,9 @@ export default function Authorization() {
   return (
     <View style={styles.container}>
         <Text style={styles.header}>{t('AUTHORIZATION')}</Text>
-        <Input text={t('EMAIL')} value={user.email} setValue={setEmail} error={errors.email} />
+        <Input text={t('EMAIL')} value={user.email} field='email' setValue={handleUpdateUser} error={errors.email} />
         <View>
-            <Input text={t('PASSWORD')} value={user.password} setValue={setPassword} password error={errors.password}/>
+            <Input text={t('PASSWORD')} value={user.password} field='password' setValue={handleUpdateUser} password error={errors.password}/>
             <Link style={[{textDecorationLine: 'underline'}, styles.description]} href={'/'}>
                 {t("FORGOTPASS")}
             </Link>

@@ -18,12 +18,6 @@ type User = {
 
 const cleanUser = {nickname: "", email: "",password: "",password2: ""}
 
-type BadRequestError = {
-  message: string[],
-  error: string,
-  statusCode: number
-}
-
 
 type Response = {
   result: User,
@@ -39,26 +33,37 @@ export default function Registration() {
   const router = useRouter();
   const {reg_fstage} = useAuth()
 
+  const handlePasswordInput = () => {
+    if(user.password !== user.password2) {
+      setErrors({...errors, password2: t('PASSWORDSDIFFERENT')})
+    } 
+    else {
+      setErrors({...errors, password2: ""})
+    }
+  }
 
-  const setNickname = (x: string) => setUser({...user, nickname: x })
-  const setEmail = (x: string) => setUser({...user, email: x })
-  const setPassword = (x: string) => setUser({...user, password: x })
-  const setPassword2 = (x: string) => setUser({...user, password2: x })
+  const handleUpdateUser = (field: string, text: string) => {
+    if(field === 'password' || field === 'password2') handlePasswordInput()
+    if(field)
+    setUser(prev => {
+     return {...prev, [field]:text}
+    })
+  }
 
-  useEffect(()=>{
-    if(user.password != user.password2) setErrors({...errors, password2: t('PASSWORDSDIFFERENT')})
-    else setErrors({...errors, password2: ""})
-  },[user.password2])
+  
 
   const reg = async () => {
     setErrors(cleanUser)
-    if(user.email == "" || user.nickname == "" || user.password == "" || user.password2 == ""){
-      if(user.email == "") setErrors({...errors, email: t("FIELDCANTBEEMPTY")})
-      if(user.nickname == "") setErrors({...errors, nickname: t("FIELDCANTBEEMPTY")})
-      if(user.password == "") setErrors({...errors, password: t("FIELDCANTBEEMPTY")})
-      if(user.password2 == "") setErrors({...errors, password2: t("FIELDCANTBEEMPTY")})
-      return
-    }
+
+    Object.entries(errors).forEach(([key, value]) => {
+      if (value === "") {
+        setErrors(prev => ({
+          ...prev,
+          [key]: t("FIELDCANTBEEMPTY")
+        }));
+      }
+    });
+
       
 
     const res : AxiosResponse | void = await apiPublic.post('auth/sign-up', user).catch((e)=>
@@ -84,9 +89,9 @@ export default function Registration() {
 
     if(res){
       const response: Response = res.data
-      if(response.access != ''){
+      if(response.access !== ''){
         reg_fstage(response.access, response.refresh, response.result)
-        router.navigate('/(app)/(auth)/account_setup')
+        router.navigate('/(app)/(auth)/accountSetup')
       }
     }
   }
@@ -94,10 +99,10 @@ export default function Registration() {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{t('REGISTRATION')}</Text>
-      <Input text={t('LOGIN')} value={user.nickname} setValue={setNickname} error={errors.nickname} />
-      <Input text={t('EMAIL')} value={user.email} setValue={setEmail} error={errors.email}/>
-      <Input text={t('PASSWORD')} value={user.password} setValue={setPassword} password error={errors.password}/>
-      <Input text={t('REPEATPASS')} value={user.password2} setValue={setPassword2} password error={errors.password2}/>
+      <Input text={t('LOGIN')} value={user.nickname} field='nickname' setValue={handleUpdateUser} error={errors.nickname} />
+      <Input text={t('EMAIL')} value={user.email} field='email' setValue={handleUpdateUser} error={errors.email}/>
+      <Input text={t('PASSWORD')} value={user.password} field='password' setValue={handleUpdateUser} password error={errors.password}/>
+      <Input text={t('REPEATPASS')} value={user.password2} field='password2' setValue={handleUpdateUser} password error={errors.password2}/>
       <View>
         <Button text={t('REGISTRATION')} action={reg} />
           <View style={{display: 'flex', flexDirection: 'row'}}>
